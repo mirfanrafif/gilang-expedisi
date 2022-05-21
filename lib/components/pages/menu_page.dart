@@ -1,3 +1,5 @@
+import 'package:aplikasi_timbang/components/pages/cari_so_page.dart';
+import 'package:aplikasi_timbang/components/widgets/menu_button.dart';
 import 'package:flutter/material.dart';
 
 class MenuPage extends StatelessWidget {
@@ -22,25 +24,30 @@ class MenuPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    getMenuButton(
-                        context,
-                        const Icon(
+                    MenuButton(
+                        icon: const Icon(
                           Icons.search,
                           color: Colors.white,
                         ),
-                        "Cari SO",
-                        () {}),
+                        onClick: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CariSOPage(),
+                            ),
+                          );
+                        },
+                        text: "Cari SO"),
                     const SizedBox(
                       height: 56,
                     ),
-                    getMenuButton(
-                        context,
-                        const Icon(
+                    MenuButton(
+                        icon: const Icon(
                           Icons.list,
                           color: Colors.white,
                         ),
-                        "Riwayat Timbang",
-                        () {}),
+                        onClick: () {},
+                        text: "Riwayat Timbang")
                   ],
                 ),
               ),
@@ -48,30 +55,6 @@ class MenuPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget getMenuButton(
-      BuildContext context, Icon icon, String text, Function() onClick) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ClipOval(
-          child: Container(
-            color: Theme.of(context).primaryColor,
-            width: 80,
-            height: 80,
-            child: IconButton(
-              icon: icon,
-              onPressed: onClick,
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        Text(text),
-      ],
     );
   }
 }
