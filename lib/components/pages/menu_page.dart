@@ -1,4 +1,5 @@
 import 'package:aplikasi_timbang/components/pages/cari_so_page.dart';
+import 'package:aplikasi_timbang/components/pages/riwayat_timbang.dart';
 import 'package:aplikasi_timbang/components/widgets/menu_button.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +47,14 @@ class MenuPage extends StatelessWidget {
                           Icons.list,
                           color: Colors.white,
                         ),
-                        onClick: () {},
+                        onClick: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const RiwayatTimbangPage(),
+                            ),
+                          );
+                        },
                         text: "Riwayat Timbang")
                   ],
                 ),
