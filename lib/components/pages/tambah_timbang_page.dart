@@ -73,7 +73,15 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                         border: const OutlineInputBorder(
                             borderSide: BorderSide.none),
                         filled: true,
-                        fillColor: Colors.red.shade100,
+                        fillColor: (state.listTimbang.isNotEmpty
+                                    ? state.listTimbang
+                                        .map((e) => e.berat)
+                                        .reduce(
+                                            (value, element) => value + element)
+                                    : 0) >=
+                                state.targetBerat
+                            ? Colors.lightGreen.shade100
+                            : Colors.red.shade100,
                       ),
                       style: const TextStyle(
                         fontSize: 32,
@@ -96,10 +104,10 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
               const SizedBox(
                 height: 16,
               ),
-              const Center(
+              Center(
                 child: Text(
-                  "Target: 1000 Kg",
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  "Target: " + state.targetBerat.toString() + " Kg",
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
               const SizedBox(
@@ -124,7 +132,15 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: Colors.lightGreen.shade100,
+                        fillColor: (state.listTimbang.isNotEmpty
+                                    ? state.listTimbang
+                                        .map((e) => e.jumlah)
+                                        .reduce(
+                                            (value, element) => value + element)
+                                    : 0) >=
+                                state.targetEkor
+                            ? Colors.lightGreen.shade100
+                            : Colors.red.shade100,
                       ),
                       style: const TextStyle(
                         fontSize: 32,
@@ -147,10 +163,10 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
               const SizedBox(
                 height: 16,
               ),
-              const Center(
+              Center(
                 child: Text(
-                  "Target: 400 Ekor",
-                  style: TextStyle(
+                  "Target: " + state.targetEkor.toString() + " Ekor",
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -190,6 +206,20 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                       height: 58,
                       child: ElevatedButton(
                         onPressed: () {
+                          if (_jumlah == 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text("Jumlah tidak boleh kosong")));
+                            return;
+                          }
+
+                          if (_berat == 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("Berat tidak boleh kosong")));
+                          }
+
                           var timbang = Timbang(_berat, _jumlah);
                           context
                               .read<TimbangBloc>()
@@ -200,6 +230,10 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                             _jumlah = 0;
                             _berat = 0;
                           });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      "Sukses menambahkan hasil timbang")));
                         },
                         child: const Text(
                           "Tambah Timbang",

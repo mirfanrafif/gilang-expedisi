@@ -17,14 +17,72 @@ class DaftarTimbangPage extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              getTargetWithCurrent(state.listTimbang),
+              SizedBox(
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text("Total Timbang"),
+                          Text(
+                            state.listTimbang
+                                    .map((e) => e.berat)
+                                    .reduce((value, element) => value + element)
+                                    .toString() +
+                                " Kg",
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            state.listTimbang
+                                    .map((e) => e.jumlah)
+                                    .reduce((value, element) => value + element)
+                                    .toString() +
+                                " Ekor",
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Text("Target Timbang"),
+                          Text(
+                            state.targetBerat.toString() + " Kg",
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            state.targetEkor.toString() + " Ekor",
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(
                 height: 16,
               ),
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) => HasilTimbang(
-                      timbang: state.listTimbang[index], index: index),
+                      timbang: state.listTimbang[index], index: index + 1),
                   itemCount: state.listTimbang.length,
                 ),
               ),
@@ -43,68 +101,6 @@ class DaftarTimbangPage extends StatelessWidget {
           ),
         );
       }),
-    );
-  }
-
-  Widget getTargetWithCurrent(List<Timbang> listTimbang) {
-    return SizedBox(
-      width: double.infinity,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("Total Timbang"),
-                Text(
-                  listTimbang
-                          .map((e) => e.berat)
-                          .reduce((value, element) => value + element)
-                          .toString() +
-                      " Kg",
-                  style: const TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  listTimbang
-                          .map((e) => e.jumlah)
-                          .reduce((value, element) => value + element)
-                          .toString() +
-                      " Ekor",
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Text("Target Timbang"),
-                Text(
-                  "30 Kg",
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  "13 Ekor",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

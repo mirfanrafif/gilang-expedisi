@@ -6,7 +6,10 @@ class TimbangState extends Equatable {
 
   TimbangState(this.listTimbang);
 
+  int targetBerat = 300;
+  int targetEkor = 70;
+
   @override
   // TODO: implement props
-  List<Object?> get props => [listTimbang];
+  List<Object?> get props => [listTimbang, targetBerat, targetEkor];
 }
