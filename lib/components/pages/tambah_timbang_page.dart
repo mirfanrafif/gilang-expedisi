@@ -16,35 +16,6 @@ class TambahTimbangPage extends StatefulWidget {
 }
 
 class _TambahTimbangPageState extends State<TambahTimbangPage> {
-  final _beratController = TextEditingController(text: "");
-  final _jumlahController = TextEditingController(text: "");
-
-  var _berat = 0;
-  var _jumlah = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _beratController.addListener(() {
-      var newBerat = int.tryParse(_beratController.text) ?? 0;
-      setState(() {
-        _berat = newBerat;
-      });
-    });
-    _jumlahController.addListener(() {
-      setState(() {
-        _jumlah = int.tryParse(_jumlahController.text) ?? 0;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _beratController.dispose();
-    _jumlahController.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +24,16 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
       ),
       body: BlocBuilder<TimbangDetailBloc, TimbangDetailState>(
         builder: (context, state) {
+          var _beratController = TextEditingController(
+              text: state is PreviousTimbangDetailState
+                  ? state.previous.berat.toString()
+                  : "");
+
+          var _jumlahController = TextEditingController(
+              text: state is PreviousTimbangDetailState
+                  ? state.previous.jumlah.toString()
+                  : "");
+
           return Padding(
             padding: const EdgeInsets.all(16),
             child: ListView(
@@ -200,6 +181,11 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                         height: 58,
                         child: ElevatedButton(
                           onPressed: () {
+                            var _jumlah =
+                                int.tryParse(_jumlahController.text) ?? 0;
+                            var _berat =
+                                int.tryParse(_beratController.text) ?? 0;
+
                             if (_jumlah == 0) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -213,6 +199,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                                   const SnackBar(
                                       content:
                                           Text("Berat tidak boleh kosong")));
+                              return;
                             }
 
                             if (state is SelectedProductState) {
