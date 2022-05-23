@@ -10,7 +10,7 @@ abstract class TimbangDetailState extends Equatable {
 }
 
 class TimbangDetailInitial extends TimbangDetailState {
-  TimbangDetailInitial(List<TimbangDetail> listDetail) : super(listDetail);
+  TimbangDetailInitial() : super([]);
 }
 
 class SelectedProductState extends TimbangDetailState {

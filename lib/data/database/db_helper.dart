@@ -84,4 +84,10 @@ class DbHelper {
     var result = db.delete(table, where: 'id=?', whereArgs: [id]);
     return result;
   }
+
+  Future<List<Map<String, dynamic>>> selectQuery(String query) async {
+    var db = await init();
+    var result = await db.rawQuery(query);
+    return result;
+  }
 }

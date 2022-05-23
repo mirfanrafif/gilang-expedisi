@@ -20,3 +20,8 @@ class TambahDetailTimbangEvent extends TimbangDetailEvent {
   @override
   List<Object> get props => [detail];
 }
+
+class TimbangUlangSebelumnya extends TimbangDetailEvent {
+  final TimbangProduk produk;
+  const TimbangUlangSebelumnya(this.produk);
+}

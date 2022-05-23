@@ -58,8 +58,10 @@ class _CariSOPageState extends State<CariSOPage> {
                           color: Colors.white,
                           icon: const Icon(Icons.search),
                           onPressed: () {
-                            int id = int.parse(_cariSoController.text);
-                            context.read<SoBloc>().add(CariSoEvent(id));
+                            if (_cariSoController.text.isNotEmpty) {
+                              int id = int.parse(_cariSoController.text);
+                              context.read<SoBloc>().add(CariSoEvent(id));
+                            }
                           },
                           splashColor: Colors.white,
                           highlightColor: Colors.white,

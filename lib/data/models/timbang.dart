@@ -9,7 +9,7 @@ class Timbang {
   String _alamatKandang = '';
   DateTime _createdAt = DateTime.now();
 
-  List<TimbangProduk> _listProduk = [];
+  final List<TimbangProduk> _listProduk = [];
 
   static const String _tableName = 'timbang';
 
@@ -20,6 +20,11 @@ class Timbang {
   String get namaKandang => _namaKandang;
   DateTime get createdAt => _createdAt;
   List<TimbangProduk> get listProduk => List.unmodifiable(_listProduk);
+
+  void set listProduk(List<TimbangProduk> newProduk) {
+    _listProduk.clear();
+    _listProduk.addAll(newProduk);
+  }
 
   Timbang(this._soId, this._supirId, this._namaKandang, this._alamatKandang);
 
@@ -62,7 +67,17 @@ class Timbang {
   static Future<List<Timbang>> getAll() async {
     var dbHelper = DbHelper();
     var result = await dbHelper.selectAll(_tableName);
-    return result.map((e) => Timbang.fromMap(e)).toList();
+    var listTimbang = result.map((e) {
+      var timbang = Timbang.fromMap(e);
+      return timbang;
+    }).toList();
+
+    for (var timbang in listTimbang) {
+      var listProduk = await TimbangProduk.getByTimbangId(timbang.id!);
+      timbang.listProduk = listProduk;
+    }
+
+    return listTimbang;
   }
 
   Future<int> delete() async {

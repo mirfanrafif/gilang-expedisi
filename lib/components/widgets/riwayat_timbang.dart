@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../data/models/timbang.dart';
+
 class RiwayatTimbangItem extends StatelessWidget {
-  const RiwayatTimbangItem({Key? key}) : super(key: key);
+  final Timbang timbang;
+  const RiwayatTimbangItem({Key? key, required this.timbang}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,20 +18,20 @@ class RiwayatTimbangItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "SO #1234",
-                  style: TextStyle(
+                  "SO #" + timbang.soId.toString(),
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text("Status: Selesai"),
-                Text("24 September 2021")
+                Text(timbang.createdAt.toLocal().toString())
               ],
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text("2000 Kg"),
+                Text(getTargetTimbang()),
                 Text("400 Ekor"),
               ],
             )
@@ -36,5 +39,29 @@ class RiwayatTimbangItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  getTargetTimbang() {
+    if (timbang.listProduk.isNotEmpty) {
+      return timbang.listProduk
+              .map((e) => e.targetBerat)
+              .reduce((value, element) => value + element)
+              .toString() +
+          " Kg";
+    } else {
+      return "0 Kg";
+    }
+  }
+
+  getTargetJumlah() {
+    if (timbang.listProduk.isNotEmpty) {
+      return timbang.listProduk
+              .map((e) => e.targetJumlah)
+              .reduce((value, element) => value + element)
+              .toString() +
+          " Pcs";
+    } else {
+      return "0 Pcs";
+    }
   }
 }

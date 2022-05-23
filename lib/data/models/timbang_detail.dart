@@ -74,4 +74,16 @@ class TimbangDetail {
     }
     return 0;
   }
+
+  static Future<TimbangDetail?> getPreviousDetail(int produkId) async {
+    var dbHelper = DbHelper();
+    var queryResult = await dbHelper.selectQuery(
+        "SELECT * FROM timbang_detail WHERE produk_id = $produkId ORDER BY id DESC LIMIT 1");
+    if (queryResult.isEmpty) {
+      return null;
+    } else {
+      var previousTimbang = TimbangDetail.fromMap(queryResult.first);
+      return previousTimbang;
+    }
+  }
 }

@@ -171,7 +171,11 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                         height: 58,
                         child: ElevatedButton(
                           onPressed: () {
-                            
+                            if (state is SelectedProductState) {
+                              context
+                                  .read<TimbangDetailBloc>()
+                                  .add(TimbangUlangSebelumnya(state.produk));
+                            }
                           },
                           child: const Text(
                             "Kembali ke Sebelumnya",
@@ -278,7 +282,6 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
               ],
             ),
           );
-          if (state is SelectedProductState) {}
         },
       ),
     );
@@ -315,7 +318,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                       .map((e) => e.jumlah)
                       .reduce((value, element) => value + element)
                   : 0) >=
-              state.produk.targetBerat
+              state.produk.targetJumlah
           ? Colors.lightGreen.shade100
           : Colors.red.shade100;
     } else if (state is PreviousTimbangDetailState) {
@@ -324,7 +327,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                       .map((e) => e.jumlah)
                       .reduce((value, element) => value + element)
                   : 0) >=
-              state.produk.targetBerat
+              state.produk.targetJumlah
           ? Colors.lightGreen.shade100
           : Colors.red.shade100;
     } else {

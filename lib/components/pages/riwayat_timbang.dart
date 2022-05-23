@@ -1,5 +1,9 @@
 import 'package:aplikasi_timbang/components/widgets/riwayat_timbang.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../bloc/timbang/timbang_bloc.dart';
+import '../../bloc/timbang/timbang_state.dart';
 
 class RiwayatTimbangPage extends StatefulWidget {
   const RiwayatTimbangPage({Key? key}) : super(key: key);
@@ -17,38 +21,46 @@ class _RiwayatTimbangPageState extends State<RiwayatTimbangPage> {
       appBar: AppBar(
         title: const Text("Riwayat Timbang"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
-                hintText: "No. SO",
-                filled: true,
-                fillColor: Colors.black12,
-              ),
-              controller: _controller,
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            Expanded(
-                child: ListView(
+      body: BlocBuilder<TimbangBloc, TimbangState>(
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
               children: [
-                RiwayatTimbangItem(),
-                RiwayatTimbangItem(),
-                RiwayatTimbangItem(),
-                RiwayatTimbangItem(),
-                RiwayatTimbangItem(),
-                RiwayatTimbangItem(),
+                TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    hintText: "No. SO",
+                    filled: true,
+                    fillColor: Colors.black12,
+                  ),
+                  controller: _controller,
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Expanded(child: getHistoryTimbangList(state))
               ],
-            ))
-          ],
-        ),
+            ),
+          );
+        },
       ),
     );
+  }
+
+  getHistoryTimbangList(TimbangState state) {
+    if (state is TimbangLoaded) {
+      return ListView.builder(
+        itemBuilder: (context, index) =>
+            RiwayatTimbangItem(timbang: state.listTimbang[index]),
+        itemCount: state.listTimbang.length,
+      );
+    } else {
+      return const Center(
+        child: Text("Tidak ada riwayat timbang"),
+      );
+    }
   }
 }

@@ -33,7 +33,7 @@ class TimbangProduk {
     _targetJumlah = map['target_jumlah'];
     _catatan = map['catatan'];
     _timbangId = map['timbang_id'];
-    _createdAt = DateTime.parse(map['target_jumlah']);
+    _createdAt = DateTime.parse(map['created_at']);
   }
 
   Map<String, dynamic> toMap() {
@@ -72,5 +72,13 @@ class TimbangProduk {
       return result;
     }
     return 0;
+  }
+
+  static Future<List<TimbangProduk>> getByTimbangId(int timbangId) async {
+    var dbHelper = DbHelper();
+    var result = await dbHelper.selectQuery(
+        "SELECT * FROM timbang_produk WHERE timbang_id = $timbangId");
+    var listProduk = result.map((e) => TimbangProduk.fromMap(e)).toList();
+    return listProduk;
   }
 }
