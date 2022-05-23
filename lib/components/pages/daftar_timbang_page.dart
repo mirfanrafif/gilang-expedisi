@@ -1,10 +1,8 @@
 import 'dart:io';
 
-import 'package:aplikasi_timbang/bloc/timbang/timbang_bloc.dart';
-import 'package:aplikasi_timbang/bloc/timbang/timbang_state.dart';
+import 'package:aplikasi_timbang/bloc/timbang_detail/timbang_detail_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/menu_page.dart';
 import 'package:aplikasi_timbang/components/widgets/hasil_timbang.dart';
-import 'package:aplikasi_timbang/data/models/timbang.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,96 +19,121 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Daftar Timbang")),
-      body: BlocBuilder<TimbangBloc, TimbangState>(builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("Total Timbang"),
-                          Text(
-                            state.listTimbang
-                                    .map((e) => e.berat)
-                                    .reduce((value, element) => value + element)
-                                    .toString() +
-                                " Kg",
-                            style: const TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.w600,
+      body: BlocBuilder<TimbangDetailBloc, TimbangDetailState>(
+          builder: (context, state) {
+        if (state is SelectedProductState) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("Total Timbang"),
+                            Text(
+                              getTotalTimbang(state) + " Kg",
+                              style: const TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          Text(
-                            state.listTimbang
-                                    .map((e) => e.jumlah)
-                                    .reduce((value, element) => value + element)
-                                    .toString() +
-                                " Ekor",
-                            style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w600,
+                            Text(
+                              getTotalJumlah(state) + " Ekor",
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Text("Target Timbang"),
-                          Text(
-                            state.targetBerat.toString() + " Kg",
-                            style: const TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.w600,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const Text("Target Timbang"),
+                            Text(
+                              state.produk.targetBerat.toString() + " Kg",
+                              style: const TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          Text(
-                            state.targetEkor.toString() + " Ekor",
-                            style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w600,
+                            Text(
+                              state.produk.targetJumlah.toString() + " Ekor",
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) => HasilTimbang(
-                      timbang: state.listTimbang[index], index: index + 1),
-                  itemCount: state.listTimbang.length,
+                const SizedBox(
+                  height: 16,
                 ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: ElevatedButton(
-                  onPressed: getVerifikasiDialog,
-                  child: const Text("Simpan dan Verifikasi Hasil Timbang"),
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) => HasilTimbang(
+                        timbang: state.listDetail[index], index: index + 1),
+                    itemCount: state.listDetail.length,
+                  ),
                 ),
-              )
-            ],
-          ),
-        );
+                const SizedBox(
+                  height: 16,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: ElevatedButton(
+                    onPressed: getVerifikasiDialog,
+                    child: const Text("Simpan dan Verifikasi Hasil Timbang"),
+                  ),
+                )
+              ],
+            ),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
       }),
     );
+  }
+
+  String getTotalTimbang(TimbangDetailState state) {
+    if (state is SelectedProductState) {
+      return state.listDetail.isNotEmpty
+          ? state.listDetail
+              .map((e) => e.berat)
+              .reduce((value, element) => value + element)
+              .toString()
+          : '0';
+    } else {
+      return '0';
+    }
+  }
+
+  String getTotalJumlah(TimbangDetailState state) {
+    if (state is SelectedProductState) {
+      return state.listDetail.isNotEmpty
+          ? state.listDetail
+              .map((e) => e.jumlah)
+              .reduce((value, element) => value + element)
+              .toString()
+          : '0';
+    } else {
+      return '0';
+    }
   }
 
   void getVerifikasiDialog() {

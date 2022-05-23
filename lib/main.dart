@@ -1,7 +1,11 @@
+import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/bloc/timbang/timbang_bloc.dart';
+import 'package:aplikasi_timbang/bloc/timbang_detail/timbang_detail_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/timbang/timbang_event.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,25 +20,20 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<TimbangBloc>(
-          create: (context) => TimbangBloc(),
-        )
+          create: (context) => TimbangBloc()..add(LoadTimbangEvent()),
+        ),
+        BlocProvider(
+          create: (context) => SoBloc(),
+        ),
+        BlocProvider(
+          create: (context) => TimbangDetailBloc(),
+        ),
       ],
       child: MaterialApp(
         title: 'Armada Gilang',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
           fontFamily: 'Poppins',
-          primarySwatch: getAppColor(
-            const Color(0xFF252785),
-          ),
+          primarySwatch: Colors.indigo,
         ),
         home: const LoginPage(),
       ),

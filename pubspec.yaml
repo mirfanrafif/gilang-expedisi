@@ -30,9 +30,15 @@ dependencies:
   flutter:
     sdk: flutter
   
+  # for bloc
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
+
+  # for sqlite
   sqflite: ^2.0.2+1
+  path_provider: ^2.0.10
+
+  # for UI
   image_picker: ^0.8.5+3
 
   # The following adds the Cupertino Icons font to your application.

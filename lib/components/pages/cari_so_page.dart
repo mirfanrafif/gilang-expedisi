@@ -1,5 +1,7 @@
+import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/widgets/product_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CariSOPage extends StatefulWidget {
   const CariSOPage({Key? key}) : super(key: key);
@@ -13,82 +15,112 @@ class _CariSOPageState extends State<CariSOPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Cari SO"),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            //Text Field untuk cari SO
-            Row(
+    return BlocBuilder<SoBloc, SoState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("Cari SO"),
+          ),
+          body: Container(
+            padding: const EdgeInsets.all(16),
+            child: ListView(
               children: [
-                Expanded(
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                      ),
-                      hintText: "No. SO",
-                      filled: true,
-                      fillColor: Colors.black12,
-                    ),
-                    controller: _cariSoController,
-                  ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                ClipOval(
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    color: Theme.of(context).primaryColor,
-                    child: IconButton(
-                      color: Colors.white,
-                      icon: const Icon(Icons.search),
-                      onPressed: () {},
-                      splashColor: Colors.white,
-                      highlightColor: Colors.white,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                //Text Field untuk cari SO
+                Row(
                   children: [
-                    Text("Nama Kandang: "),
-                    Text("Alamat Kandang: "),
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hintText: "No. SO",
+                          filled: true,
+                          fillColor: Colors.black12,
+                        ),
+                        keyboardType: TextInputType.number,
+                        controller: _cariSoController,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    ClipOval(
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        color: Theme.of(context).primaryColor,
+                        child: IconButton(
+                          color: Colors.white,
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            int id = int.parse(_cariSoController.text);
+                            context.read<SoBloc>().add(CariSoEvent(id));
+                          },
+                          splashColor: Colors.white,
+                          highlightColor: Colors.white,
+                        ),
+                      ),
+                    )
                   ],
                 ),
-              ),
+                const SizedBox(
+                  height: 16,
+                ),
+                ...getSoDetail(state),
+              ],
             ),
-            const SizedBox(
-              height: 16,
-            ),
-            const Text("Produk:"),
-            const SizedBox(
-              height: 16,
-            ),
-            ProductCard(),
-            ProductCard(),
-            ProductCard(),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
+  }
+
+  List<Widget> getSoDetail(SoState state) {
+    if (state is SoLoaded) {
+      return [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "SO No. " + state.timbang.soId.toString(),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w600),
+                ),
+                Text("Nama Kandang: " + state.timbang.namaKandang),
+                Text("Alamat Kandang: " + state.timbang.alamatKandang),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        const Text("Produk:"),
+        const SizedBox(
+          height: 16,
+        ),
+        ...state.timbang.listProduk
+            .map((e) => ProductCard(
+                  produk: e,
+                ))
+            .toList(),
+      ];
+    } else if (state is SoLoading) {
+      return [
+        const Center(
+          child: CircularProgressIndicator(),
+        )
+      ];
+    } else {
+      return [];
+    }
   }
 }

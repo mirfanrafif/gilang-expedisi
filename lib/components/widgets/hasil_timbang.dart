@@ -1,8 +1,8 @@
-import 'package:aplikasi_timbang/data/models/timbang.dart';
+import 'package:aplikasi_timbang/data/models/timbang_detail.dart';
 import 'package:flutter/material.dart';
 
 class HasilTimbang extends StatelessWidget {
-  final Timbang timbang;
+  final TimbangDetail timbang;
   final int index;
   const HasilTimbang({
     Key? key,
