@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/timbang/timbang_event.dart';
 
 void main() {
+  var hello = WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

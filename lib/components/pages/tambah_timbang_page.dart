@@ -38,108 +38,12 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
             padding: const EdgeInsets.all(16),
             child: ListView(
               children: [
-                const Center(
-                  child: Text("Masukkan Jumlah Timbang"),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        controller: _beratController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: "0",
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide.none),
-                          filled: true,
-                          fillColor: getTargetBeratColor(state),
-                        ),
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    const Text(
-                      "Kg",
-                      style: TextStyle(
-                        fontSize: 32,
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Center(
-                  child: Text(
-                    getTargetBeratText(state),
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
+                ...getBeratForm(state, _beratController),
                 const SizedBox(
                   height: 32,
                 ),
                 //Jumlah Ekor
-                const Center(
-                  child: Text("Masukkan Jumlah Ekor"),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _jumlahController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: "0",
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-                          filled: true,
-                          fillColor: getTargetJumlahColor(state),
-                        ),
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    const Text(
-                      "Ekor",
-                      style: TextStyle(
-                        fontSize: 32,
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Center(
-                  child: Text(
-                    getTargetJumlahText(state),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                ...getJumlahForm(state, _jumlahController),
                 const SizedBox(
                   height: 32,
                 ),
@@ -340,5 +244,111 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
     } else {
       return "Target: 0 Ekor";
     }
+  }
+
+  List<Widget> getBeratForm(
+      TimbangDetailState state, TextEditingController _beratController) {
+    return [
+      const Center(
+        child: Text("Masukkan Jumlah Timbang"),
+      ),
+      const SizedBox(
+        height: 16,
+      ),
+      Row(
+        children: [
+          Expanded(
+            child: TextField(
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              controller: _beratController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: "0",
+                border: const OutlineInputBorder(borderSide: BorderSide.none),
+                filled: true,
+                fillColor: getTargetBeratColor(state),
+              ),
+              style: const TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(
+            width: 16,
+          ),
+          const Text(
+            "Kg",
+            style: TextStyle(
+              fontSize: 32,
+            ),
+          )
+        ],
+      ),
+      const SizedBox(
+        height: 16,
+      ),
+      Center(
+        child: Text(
+          getTargetBeratText(state),
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> getJumlahForm(TimbangDetailState state, _jumlahController) {
+    return [
+      const Center(
+        child: Text("Masukkan Jumlah Ekor"),
+      ),
+      const SizedBox(
+        height: 16,
+      ),
+      Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _jumlahController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: "0",
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: getTargetJumlahColor(state),
+              ),
+              style: const TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(
+            width: 16,
+          ),
+          const Text(
+            "Ekor",
+            style: TextStyle(
+              fontSize: 32,
+            ),
+          )
+        ],
+      ),
+      const SizedBox(
+        height: 16,
+      ),
+      Center(
+        child: Text(
+          getTargetJumlahText(state),
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    ];
   }
 }

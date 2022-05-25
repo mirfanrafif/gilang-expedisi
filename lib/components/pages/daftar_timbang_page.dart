@@ -15,6 +15,8 @@ class DaftarTimbangPage extends StatefulWidget {
 }
 
 class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
+  File? buktiTimbang;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -210,6 +212,14 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                         height: 40,
                         child: ElevatedButton(
                           onPressed: () {
+                            if (buktiTimbang == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Mohon foto data timbang"),
+                                ),
+                              );
+                              return;
+                            }
                             Navigator.pop(context);
                             tampilkanDialogSukses();
                           },
@@ -222,8 +232,6 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
               }),
             ));
   }
-
-  File? buktiTimbang;
 
   void tampilkanDialogSukses() {
     showDialog(

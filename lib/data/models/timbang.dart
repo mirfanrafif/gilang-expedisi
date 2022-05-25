@@ -8,6 +8,7 @@ class Timbang {
   String _namaKandang = '';
   String _alamatKandang = '';
   DateTime _createdAt = DateTime.now();
+  bool syncWithApi = false;
 
   final List<TimbangProduk> _listProduk = [];
 
@@ -21,7 +22,7 @@ class Timbang {
   DateTime get createdAt => _createdAt;
   List<TimbangProduk> get listProduk => List.unmodifiable(_listProduk);
 
-  void set listProduk(List<TimbangProduk> newProduk) {
+  set listProduk(List<TimbangProduk> newProduk) {
     _listProduk.clear();
     _listProduk.addAll(newProduk);
   }
@@ -39,6 +40,7 @@ class Timbang {
     _createdAt = DateTime.parse(map['created_at']);
     _namaKandang = map['nama_kandang'];
     _alamatKandang = map['alamat_kandang'];
+    syncWithApi = map['sync_with_api'];
   }
 
   Map<String, dynamic> toMap() {
@@ -48,6 +50,7 @@ class Timbang {
     map['supir_id'] = _supirId;
     map['nama_kandang'] = _namaKandang;
     map['alamat_kandang'] = _alamatKandang;
+    map['sync_with_api'] = syncWithApi;
     return map;
   }
 

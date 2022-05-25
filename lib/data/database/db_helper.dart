@@ -4,18 +4,19 @@ import 'package:sqflite/sqflite.dart';
 
 class DbHelper {
   DbHelper._singleton();
+  static DbHelper? _dbHelper;
+
+  static Database? _database;
 
   factory DbHelper() {
-    return _dbHelper;
+    return _dbHelper ??= DbHelper._singleton();
   }
-
-  static final DbHelper _dbHelper = DbHelper._singleton();
 
   Future<Database> init() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'timbang.db';
 
-    return await openDatabase(
+    return _database ??= await openDatabase(
       path,
       version: 1,
       onCreate: _createDb,
@@ -31,6 +32,7 @@ class DbHelper {
         nama_kandang VARCHAR(255) NOT NULL,
         alamat_kandang VARCHAR(255) NOT NULL,
         supir_id INTEGER NOT NULL,
+        sync_with_api TINYINT DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     ''');
@@ -43,6 +45,7 @@ class DbHelper {
         target_jumlah INTEGER NOT NULL,
         catatan VARCHAR(255),
         timbang_id INTEGER NOT NULL,
+        bukti_verifikasi VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     ''');
