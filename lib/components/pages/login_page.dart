@@ -1,4 +1,5 @@
 import 'package:aplikasi_timbang/components/pages/menu_page.dart';
+import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,6 +51,9 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: BlocListener<UserBloc, UserState>(
           listener: (context, state) {
+            if (state is LoginErrorState) {
+              showErrorSnackbar(context, state.message);
+            }
             if (state is LoggedInState) {
               Navigator.pushAndRemoveUntil(
                 context,

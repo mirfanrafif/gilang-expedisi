@@ -12,6 +12,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserInitial()) {
     on<LoginEvent>(onLogin);
     on<CheckSessionEvent>(onCheckSession);
+    on<LogoutEvent>(onLogout);
   }
 
   onCheckSession(CheckSessionEvent event, Emitter<UserState> emit) {
@@ -32,13 +33,20 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           email: response.data?.user?.email ?? '',
           role: response.data?.user?.role ?? '');
 
-      repository.saveUser(user);
+      repository.saveUser(user, event.password);
       repository.saveToken(response.data?.accessToken ?? '');
 
       emit(LoggedInState(
         userEntity: user,
         token: response.data?.accessToken ?? '',
       ));
-    } else {}
+    } else {
+      emit(LoginErrorState(response.message));
+    }
+  }
+
+  onLogout(LogoutEvent event, Emitter<UserState> emit) async {
+    repository.logout();
+    emit(UserInitial());
   }
 }

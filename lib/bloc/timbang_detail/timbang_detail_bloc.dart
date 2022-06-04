@@ -25,13 +25,12 @@ class TimbangDetailBloc extends Bloc<TimbangDetailEvent, TimbangDetailState> {
 
   void onSetProduk(
       SetTimbangProdukEvent event, Emitter<TimbangDetailState> emit) async {
-    emit(SelectedProductState(event.produk, state.listDetail));
+    emit(SelectedProductState(event.produk, event.produk.listTimbangDetail));
   }
 
   FutureOr<void> onTimbangUlang(
       TimbangUlangSebelumnya event, Emitter<TimbangDetailState> emit) async {
-    var previousDetail =
-        await TimbangDetail.getPreviousDetail(event.produk.id!);
+    var previousDetail = await TimbangDetail.getPreviousDetail(event.produk.id);
 
     if (previousDetail != null) {
       var newListDetail = [...state.listDetail];

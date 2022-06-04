@@ -14,8 +14,8 @@ class UserRepository {
     return response;
   }
 
-  void saveUser(UserEntity user) {
-    preferences.setUser(user);
+  void saveUser(UserEntity user, String password) {
+    preferences.setUser(user, password);
   }
 
   void saveToken(String token) {
@@ -26,5 +26,9 @@ class UserRepository {
 
   UserEntity getUser() {
     return preferences.getUser();
+  }
+
+  void logout() {
+    preferences.logout();
   }
 }

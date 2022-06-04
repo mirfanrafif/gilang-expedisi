@@ -32,14 +32,14 @@ class DbHelper {
         nama_kandang VARCHAR(255) NOT NULL,
         alamat_kandang VARCHAR(255) NOT NULL,
         supir_id INTEGER NOT NULL,
-        sync_with_api TINYINT DEFAULT FALSE,
+        sync_with_api TINYINT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     ''');
 
     await db.execute('''
       CREATE TABLE timbang_produk(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id INTEGER PRIMARY KEY NOT NULL,
         nama_produk INTEGER NOT NULL,
         target_berat INTEGER NOT NULL,
         target_jumlah INTEGER NOT NULL,

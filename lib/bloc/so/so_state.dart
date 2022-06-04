@@ -19,6 +19,9 @@ class SoLoaded extends SoState {
 
 class SoNotFound extends SoState {
   final int id;
+  final String message;
+  const SoNotFound({required this.id, required this.message});
 
-  const SoNotFound({required this.id});
+  @override
+  List<Object> get props => [id, message];
 }

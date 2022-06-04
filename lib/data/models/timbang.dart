@@ -14,7 +14,7 @@ class Timbang {
 
   static const String _tableName = 'timbang';
 
-  int? get id => _id;
+  int get id => _id;
   int get soId => _soId;
   int get supirId => _supirId;
   String get alamatKandang => _alamatKandang;
@@ -35,6 +35,18 @@ class Timbang {
     this._alamatKandang,
   );
 
+  static Future<Timbang?> findById(int id) async {
+    var dbHelper = DbHelper();
+    var result =
+        await dbHelper.selectQuery('SELECT * FROM timbang WHERE id = $id;');
+
+    if (result.isNotEmpty) {
+      var timbang = Timbang.fromMap(result.first);
+      return timbang;
+    }
+    return null;
+  }
+
   void tambahProduk(TimbangProduk produk) {
     _listProduk.add(produk);
   }
@@ -46,7 +58,7 @@ class Timbang {
     _createdAt = DateTime.parse(map['created_at']);
     _namaKandang = map['nama_kandang'];
     _alamatKandang = map['alamat_kandang'];
-    syncWithApi = map['sync_with_api'];
+    syncWithApi = map['sync_with_api'] == 1 ? true : false;
   }
 
   Map<String, dynamic> toMap() {
@@ -76,7 +88,7 @@ class Timbang {
     }).toList();
 
     for (var timbang in listTimbang) {
-      var listProduk = await TimbangProduk.getByTimbangId(timbang.id!);
+      var listProduk = await TimbangProduk.getByTimbangId(timbang.id);
       timbang.listProduk = listProduk;
     }
 

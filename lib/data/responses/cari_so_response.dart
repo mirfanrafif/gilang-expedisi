@@ -396,7 +396,7 @@ class ProductElement {
       productId: json["product_id"],
       productName: json["product_name"],
       description: json["description"],
-      amount: json["amount"],
+      amount: double.tryParse(json["amount"].toString()),
       returnAmount: json["return_amount"],
       unit: json["unit"],
       perUnitPrice: json["per_unit_price"],

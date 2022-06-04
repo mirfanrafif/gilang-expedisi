@@ -1,5 +1,6 @@
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/widgets/product_card.dart';
+import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,61 +21,70 @@ class _CariSOPageState extends State<CariSOPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SoBloc, SoState>(
+    return BlocConsumer<SoBloc, SoState>(
+      listener: (context, state) {
+        if (state is SoNotFound) {
+          showErrorSnackbar(context, state.message);
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             title: const Text("Cari SO"),
           ),
-          body: Container(
-            padding: const EdgeInsets.all(16),
-            child: ListView(
-              children: [
-                //Text Field untuk cari SO
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //Text Field untuk cari SO
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: "No. SO",
+                            filled: true,
+                            fillColor: Colors.black12,
                           ),
-                          hintText: "No. SO",
-                          filled: true,
-                          fillColor: Colors.black12,
-                        ),
-                        keyboardType: TextInputType.number,
-                        controller: _cariSoController,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    ClipOval(
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        color: Theme.of(context).primaryColor,
-                        child: IconButton(
-                          color: Colors.white,
-                          icon: const Icon(Icons.search),
-                          onPressed: () {
-                            if (_cariSoController.text.isNotEmpty) {
-                              int id = int.parse(_cariSoController.text);
-                              context.read<SoBloc>().add(CariSoEvent(id: id));
-                            }
-                          },
-                          splashColor: Colors.white,
-                          highlightColor: Colors.white,
+                          keyboardType: TextInputType.number,
+                          controller: _cariSoController,
                         ),
                       ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                ...getSoDetail(state),
-              ],
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      ClipOval(
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          color: Theme.of(context).primaryColor,
+                          child: IconButton(
+                            color: Colors.white,
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              if (_cariSoController.text.isNotEmpty) {
+                                int id = int.parse(_cariSoController.text);
+                                context.read<SoBloc>().add(CariSoEvent(id: id));
+                              }
+                            },
+                            splashColor: Colors.white,
+                            highlightColor: Colors.white,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  ...getSoDetail(state),
+                ],
+              ),
             ),
           ),
         );
@@ -86,8 +96,9 @@ class _CariSOPageState extends State<CariSOPage> {
     if (state is SoLoaded) {
       return [
         Card(
-          child: Padding(
+          child: Container(
             padding: const EdgeInsets.all(16),
+            width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

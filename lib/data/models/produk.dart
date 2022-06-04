@@ -3,7 +3,7 @@ import 'package:aplikasi_timbang/data/models/timbang_detail.dart';
 import '../database/db_helper.dart';
 
 class TimbangProduk {
-  int? _id;
+  int _id = 0;
   String _namaProduk = '';
   int _targetBerat = 0;
   int _targetJumlah = 0;
@@ -12,7 +12,7 @@ class TimbangProduk {
   DateTime _createdAt = DateTime.now();
   final List<TimbangDetail> _listTimbangDetail = [];
 
-  int? get id => _id;
+  int get id => _id;
   String get namaProduk => _namaProduk;
   int get targetBerat => _targetBerat;
   int get targetJumlah => _targetJumlah;
@@ -23,9 +23,36 @@ class TimbangProduk {
 
   static const String _tableName = 'timbang_produk';
 
-  TimbangProduk(this._namaProduk, this._targetBerat, this._targetJumlah,
-      this._catatan, this._timbangId);
+  set listTimbangDetail(List<TimbangDetail> newValue) {
+    _listTimbangDetail.clear();
+    _listTimbangDetail.addAll(newValue);
+  }
 
+  //constructor untuk memasukkan ke database
+  TimbangProduk(
+    this._id,
+    this._namaProduk,
+    this._targetBerat,
+    this._targetJumlah,
+    this._catatan,
+    this._timbangId,
+  );
+
+  static Future<TimbangProduk?> findById(int id) async {
+    var dbHelper = DbHelper();
+    var queryResult = await dbHelper
+        .selectQuery('SELECT * FROM timbang_produk WHERE id = $id;');
+
+    if (queryResult.isEmpty) {
+      return null;
+    }
+
+    var produk = TimbangProduk.fromMap(queryResult.first);
+
+    return produk;
+  }
+
+  //convert from database to class
   TimbangProduk.fromMap(Map<String, dynamic> map) {
     _id = map['id'];
     _namaProduk = map['nama_produk'];
@@ -36,8 +63,10 @@ class TimbangProduk {
     _createdAt = DateTime.parse(map['created_at']);
   }
 
+  //convert from class to database
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {};
+    result['id'] = _id;
     result['nama_produk'] = _namaProduk;
     result['target_berat'] = _targetBerat;
     result['target_jumlah'] = _targetJumlah;
@@ -52,11 +81,7 @@ class TimbangProduk {
 
   Future<void> save() async {
     var dbHelper = DbHelper();
-    if (_id != null) {
-      _id = await dbHelper.update(_tableName, toMap(), _id!);
-    } else {
-      _id = await dbHelper.insert(_tableName, toMap());
-    }
+    _id = await dbHelper.insert(_tableName, toMap());
   }
 
   static Future<List<TimbangProduk>> getAll() async {
@@ -67,11 +92,8 @@ class TimbangProduk {
 
   Future<int> delete() async {
     var dbHelper = DbHelper();
-    if (_id != null) {
-      var result = await dbHelper.delete(_tableName, _id!);
-      return result;
-    }
-    return 0;
+    var result = await dbHelper.delete(_tableName, _id);
+    return result;
   }
 
   static Future<List<TimbangProduk>> getByTimbangId(int timbangId) async {

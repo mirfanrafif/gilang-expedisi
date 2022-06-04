@@ -108,7 +108,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
 
                             if (state is SelectedProductState) {
                               var timbang = TimbangDetail(
-                                  _berat, _jumlah, state.produk.id!);
+                                  _berat, _jumlah, state.produk.id);
                               context.read<TimbangDetailBloc>().add(
                                   TambahDetailTimbangEvent(
                                       timbang, state.produk));

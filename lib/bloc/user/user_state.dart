@@ -21,3 +21,12 @@ class LoggedInState extends UserState {
   @override
   List<Object> get props => [userEntity, token];
 }
+
+class LoginErrorState extends UserState {
+  final String message;
+
+  const LoginErrorState(this.message);
+
+    @override
+  List<Object> get props => [message];
+}

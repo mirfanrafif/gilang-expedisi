@@ -3,6 +3,7 @@ import 'package:aplikasi_timbang/bloc/timbang/timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/timbang_detail/timbang_detail_bloc.dart';
 import 'package:aplikasi_timbang/bloc/user/user_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/login_page.dart';
+import 'package:aplikasi_timbang/components/pages/menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<TimbangBloc>(
-          create: (context) => TimbangBloc()..add(LoadTimbangEvent()),
+          create: (context) => TimbangBloc(),
         ),
         BlocProvider(
           create: (context) => SoBloc(),
@@ -42,7 +43,15 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Poppins',
           primarySwatch: Colors.indigo,
         ),
-        home: const LoginPage(),
+        home: BlocBuilder<UserBloc, UserState>(
+          builder: (context, state) {
+            if (state is LoggedInState) {
+              return const MenuPage();
+            } else {
+              return const LoginPage();
+            }
+          },
+        ),
       ),
     );
   }

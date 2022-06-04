@@ -9,6 +9,7 @@ class UserPreferences {
   final _role = "role";
   final _profilePhoto = "profile_photo";
   final _jwtToken = "jwt_token";
+  final _password = "password";
   var preferences = BasePreferences.preferences;
 
   UserEntity getUser() {
@@ -21,12 +22,18 @@ class UserPreferences {
     return user;
   }
 
-  void setUser(UserEntity user) {
+  void setUser(UserEntity user, String password) {
     preferences.setInt(_id, user.id);
     preferences.setString(_fullName, user.fullName);
     preferences.setString(_email, user.email);
     preferences.setString(_role, user.role);
     preferences.setString(_profilePhoto, user.profilePhoto ?? "");
+    preferences.setString(_password, password);
+  }
+
+  String getPassword() {
+    var password = preferences.getString(_password);
+    return password ?? '';
   }
 
   String? getToken() {

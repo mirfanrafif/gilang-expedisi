@@ -6,14 +6,14 @@ class TimbangDetail {
   int _jumlah = 0;
   int? _beratOld;
   int? _jumlahOld;
-  int _timbangId = 0;
+  int _produkId = 0;
 
   int get berat => _berat;
   int get jumlah => _jumlah;
   int? get beratOld => _beratOld;
   int? get jumlahOld => _jumlahOld;
   int? get id => _id;
-  int get timbangId => _timbangId;
+  int get timbangId => _produkId;
 
   set jumlah(int newValue) {
     _jumlahOld = _jumlah;
@@ -25,7 +25,7 @@ class TimbangDetail {
     _berat = newValue;
   }
 
-  TimbangDetail(this._berat, this._jumlah, this._timbangId);
+  TimbangDetail(this._berat, this._jumlah, this._produkId);
 
   static const String _tableName = 'timbang_detail';
 
@@ -35,7 +35,7 @@ class TimbangDetail {
     _beratOld = map['berat_old'];
     _jumlahOld = map['jumlah_old'];
     _jumlah = map['jumlah'];
-    _timbangId = map['produk_id'];
+    _produkId = map['produk_id'];
   }
 
   Map<String, dynamic> toMap() {
@@ -45,7 +45,7 @@ class TimbangDetail {
     result['jumlah'] = _jumlah;
     result['berat_old'] = _beratOld;
     result['jumlah_old'] = _jumlahOld;
-    result['produk_id'] = _timbangId;
+    result['produk_id'] = _produkId;
     return result;
   }
 
@@ -85,5 +85,12 @@ class TimbangDetail {
       var previousTimbang = TimbangDetail.fromMap(queryResult.first);
       return previousTimbang;
     }
+  }
+
+  static Future<List<TimbangDetail>> getByProdukId(int produkId) async {
+    var dbHelper = DbHelper();
+    var result = await dbHelper
+        .selectQuery('SELECT * FROM $_tableName WHERE produk_id = $produkId;');
+    return result.map((e) => TimbangDetail.fromMap(e)).toList();
   }
 }

@@ -28,11 +28,11 @@ class AuthService {
           message: 'Gagal login: ' + (errorResponse.message ?? ''),
         );
       }
-    } catch (e) {
+    } on DioError catch (e) {
       return ApiResponse(
         success: false,
         data: null,
-        message: 'Gagal login: ' + e.toString(),
+        message: 'Gagal login: ' + e.message,
       );
     }
   }

@@ -6,5 +6,3 @@ class TimbangEvent extends Equatable {
   // TODO: implement props
   List<Object?> get props => [];
 }
-
-class LoadTimbangEvent extends TimbangEvent {}
