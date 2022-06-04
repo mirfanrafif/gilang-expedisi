@@ -27,7 +27,7 @@ class DbHelper {
     //buat tabel timbang
     await db.execute('''
       CREATE TABLE timbang(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id INTEGER PRIMARY KEY NOT NULL,
         nomor_so INTEGER NOT NULL,
         nama_kandang VARCHAR(255) NOT NULL,
         alamat_kandang VARCHAR(255) NOT NULL,

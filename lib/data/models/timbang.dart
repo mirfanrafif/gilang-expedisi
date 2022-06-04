@@ -2,7 +2,7 @@ import 'package:aplikasi_timbang/data/database/db_helper.dart';
 import 'package:aplikasi_timbang/data/models/produk.dart';
 
 class Timbang {
-  int? _id;
+  int _id = 0;
   int _soId = 0;
   int _supirId = 0;
   String _namaKandang = '';
@@ -27,7 +27,13 @@ class Timbang {
     _listProduk.addAll(newProduk);
   }
 
-  Timbang(this._soId, this._supirId, this._namaKandang, this._alamatKandang);
+  Timbang(
+    this._id,
+    this._soId,
+    this._supirId,
+    this._namaKandang,
+    this._alamatKandang,
+  );
 
   void tambahProduk(TimbangProduk produk) {
     _listProduk.add(produk);
@@ -56,15 +62,9 @@ class Timbang {
 
   Future<void> save() async {
     var dbHelper = DbHelper();
-    if (_id != null) {
-      var result = await dbHelper.update(_tableName, toMap(), _id!);
+    var result = await dbHelper.insert(_tableName, toMap());
 
-      _id = result;
-    } else {
-      var result = await dbHelper.insert(_tableName, toMap());
-
-      _id = result;
-    }
+    _id = result;
   }
 
   static Future<List<Timbang>> getAll() async {
@@ -85,10 +85,7 @@ class Timbang {
 
   Future<int> delete() async {
     var dbHelper = DbHelper();
-    if (_id != null) {
-      var result = await dbHelper.delete(_tableName, _id!);
-      return result;
-    }
-    return 0;
+    var result = await dbHelper.delete(_tableName, _id);
+    return result;
   }
 }

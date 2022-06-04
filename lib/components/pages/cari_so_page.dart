@@ -60,7 +60,7 @@ class _CariSOPageState extends State<CariSOPage> {
                           onPressed: () {
                             if (_cariSoController.text.isNotEmpty) {
                               int id = int.parse(_cariSoController.text);
-                              context.read<SoBloc>().add(CariSoEvent(id));
+                              context.read<SoBloc>().add(CariSoEvent(id: id));
                             }
                           },
                           splashColor: Colors.white,
