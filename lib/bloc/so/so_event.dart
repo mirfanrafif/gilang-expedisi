@@ -8,9 +8,13 @@ abstract class SoEvent extends Equatable {
 }
 
 class CariSoEvent extends SoEvent {
-  int id = 0;
-  CariSoEvent(this.id);
+  int id;
+  String token;
+  CariSoEvent({
+    required this.id,
+    required this.token,
+  });
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [id, token];
 }

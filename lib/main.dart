@@ -1,14 +1,17 @@
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/bloc/timbang/timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/timbang_detail/timbang_detail_bloc.dart';
+import 'package:aplikasi_timbang/bloc/user/user_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/timbang/timbang_event.dart';
+import 'data/preferences/base_preferences.dart';
 
-void main() {
-  var hello = WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await BasePreferences.init();
   runApp(const MyApp());
 }
 
@@ -29,6 +32,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => TimbangDetailBloc(),
         ),
+        BlocProvider(
+          create: (context) => UserBloc()..add(CheckSessionEvent()),
+        )
       ],
       child: MaterialApp(
         title: 'Armada Gilang',

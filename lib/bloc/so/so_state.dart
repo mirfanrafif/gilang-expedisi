@@ -16,3 +16,9 @@ class SoLoaded extends SoState {
 
   const SoLoaded(this.timbang);
 }
+
+class SoNotFound extends SoState {
+  final int id;
+
+  const SoNotFound({required this.id});
+}

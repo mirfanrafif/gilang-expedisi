@@ -1,5 +1,8 @@
 import 'package:aplikasi_timbang/components/pages/menu_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../bloc/user/user_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -37,81 +40,89 @@ class _LoginPageState extends State<LoginPage> {
         _passwordError = null;
       });
     }
-
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const MenuPage(),
-        ),
-        (route) => false);
+    context.read<UserBloc>().add(LoginEvent(
+        email: _usernameController.text, password: _passwordController.text));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(33),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset('assets/logo.png', width: 168),
-                const Text(
-                  "Login",
-                  style: TextStyle(fontSize: 20),
+        child: BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            if (state is LoggedInState) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MenuPage(),
                 ),
-                const SizedBox(
-                  height: 32,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.people),
-                    filled: true,
-                    errorText: _usernameError,
-                    fillColor: Colors.black12,
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4),
+                (route) => false,
+              );
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(33),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset('assets/logo.png', width: 168),
+                  const Text(
+                    "Login",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.people),
+                      filled: true,
+                      errorText: _usernameError,
+                      fillColor: Colors.black12,
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4),
+                        ),
+                        borderSide: BorderSide.none,
                       ),
-                      borderSide: BorderSide.none,
+                      hintText: "Username",
                     ),
-                    hintText: "Username",
+                    controller: _usernameController,
                   ),
-                  controller: _usernameController,
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.password),
-                    filled: true,
-                    errorText: _passwordError,
-                    fillColor: Colors.black12,
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.password),
+                      filled: true,
+                      errorText: _passwordError,
+                      fillColor: Colors.black12,
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4),
+                        ),
+                        borderSide: BorderSide.none,
                       ),
-                      borderSide: BorderSide.none,
+                      hintText: "Password",
                     ),
-                    hintText: "Password",
+                    controller: _passwordController,
                   ),
-                  controller: _passwordController,
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 40.0,
-                  child: ElevatedButton(
-                    onPressed: login,
-                    child: const Text("Login"),
+                  const SizedBox(
+                    height: 32,
                   ),
-                )
-              ],
+                  SizedBox(
+                    width: double.infinity,
+                    height: 40.0,
+                    child: ElevatedButton(
+                      onPressed: login,
+                      child: const Text("Login"),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
