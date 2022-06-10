@@ -8,11 +8,10 @@ class Timbang {
   String _namaKandang = '';
   String _alamatKandang = '';
   DateTime _createdAt = DateTime.now();
-  bool syncWithApi = false;
 
   final List<TimbangProduk> _listProduk = [];
 
-  static const String _tableName = 'timbang';
+  static const String _tableName = 'job';
 
   int get id => _id;
   int get soId => _soId;
@@ -38,7 +37,7 @@ class Timbang {
   static Future<Timbang?> findById(int id) async {
     var dbHelper = DbHelper();
     var result =
-        await dbHelper.selectQuery('SELECT * FROM timbang WHERE id = $id;');
+        await dbHelper.selectQuery('SELECT * FROM $_tableName WHERE id = $id;');
 
     if (result.isNotEmpty) {
       var timbang = Timbang.fromMap(result.first);
@@ -58,7 +57,6 @@ class Timbang {
     _createdAt = DateTime.parse(map['created_at']);
     _namaKandang = map['nama_kandang'];
     _alamatKandang = map['alamat_kandang'];
-    syncWithApi = map['sync_with_api'] == 1 ? true : false;
   }
 
   Map<String, dynamic> toMap() {
@@ -68,15 +66,17 @@ class Timbang {
     map['supir_id'] = _supirId;
     map['nama_kandang'] = _namaKandang;
     map['alamat_kandang'] = _alamatKandang;
-    map['sync_with_api'] = syncWithApi;
     return map;
   }
 
   Future<void> save() async {
     var dbHelper = DbHelper();
-    var result = await dbHelper.insert(_tableName, toMap());
-
-    _id = result;
+    var existingProduk = await findById(id);
+    if (existingProduk != null) {
+      await dbHelper.update(_tableName, toMap(), id);
+    } else {
+      await dbHelper.insert(_tableName, toMap());
+    }
   }
 
   static Future<List<Timbang>> getAll() async {

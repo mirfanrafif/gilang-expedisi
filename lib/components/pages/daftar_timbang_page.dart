@@ -1,11 +1,16 @@
 import 'dart:io';
 
-import 'package:aplikasi_timbang/bloc/timbang_detail/timbang_detail_bloc.dart';
+import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
+import 'package:aplikasi_timbang/components/pages/cari_so_page.dart';
 import 'package:aplikasi_timbang/components/pages/menu_page.dart';
 import 'package:aplikasi_timbang/components/widgets/hasil_timbang.dart';
+import 'package:aplikasi_timbang/data/models/produk.dart';
+import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../data/models/timbang.dart';
 
 class DaftarTimbangPage extends StatefulWidget {
   const DaftarTimbangPage({Key? key}) : super(key: key);
@@ -21,8 +26,22 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Daftar Timbang")),
-      body: BlocBuilder<TimbangDetailBloc, TimbangDetailState>(
-          builder: (context, state) {
+      body: BlocConsumer<SoBloc, SoState>(listener: (context, state) {
+        if (state is UploadBuktiErrorState) {
+          showErrorSnackbar(context, state.errorMessage);
+        }
+        if (state is TimbangProdukSelesaiState) {
+          tampilkanDialogSukses(state);
+        }
+        if (state is SoLoaded) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CariSOPage(),
+              ),
+              (route) => false);
+        }
+      }, builder: (context, state) {
         if (state is SelectedProductState) {
           return Padding(
             padding: const EdgeInsets.all(16),
@@ -96,7 +115,9 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                   width: double.infinity,
                   height: 40,
                   child: ElevatedButton(
-                    onPressed: getVerifikasiDialog,
+                    onPressed: () {
+                      getVerifikasiDialog(state.produk, state.timbang);
+                    },
                     child: const Text("Simpan dan Verifikasi Hasil Timbang"),
                   ),
                 )
@@ -112,7 +133,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
     );
   }
 
-  String getTotalTimbang(TimbangDetailState state) {
+  String getTotalTimbang(SoState state) {
     if (state is SelectedProductState) {
       return state.listDetail.isNotEmpty
           ? state.listDetail
@@ -125,7 +146,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
     }
   }
 
-  String getTotalJumlah(TimbangDetailState state) {
+  String getTotalJumlah(SoState state) {
     if (state is SelectedProductState) {
       return state.listDetail.isNotEmpty
           ? state.listDetail
@@ -138,141 +159,143 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
     }
   }
 
-  void getVerifikasiDialog() {
+  void getVerifikasiDialog(TimbangProduk produk, Timbang timbang) {
     showDialog(
-        context: context,
-        builder: (context) => Dialog(
-              insetPadding: const EdgeInsets.all(16),
-              child: StatefulBuilder(builder: (context, setState) {
-                return Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Verifikasi Petugas Kandang",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 32,
-                      ),
-                      const Text("Kirim foto data timbang"),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          final imagePicker = ImagePicker();
-                          var result = await imagePicker.pickImage(
-                              source: ImageSource.camera);
-
-                          if (result != null) {
-                            setState(() {
-                              buktiTimbang = File(result.path);
-                            });
-                          }
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          height: 180,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.black12,
-                              width: 1,
-                              style: BorderStyle.solid,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: buktiTimbang != null
-                              ? Image(
-                                  image: FileImage(buktiTimbang!),
-                                  fit: BoxFit.cover,
-                                )
-                              : Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: const [
-                                      Icon(Icons.camera),
-                                      Text("Tekan disini untuk mengambil foto"),
-                                    ],
-                                  ),
-                                ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 32,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (buktiTimbang == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Mohon foto data timbang"),
-                                ),
-                              );
-                              return;
-                            }
-                            Navigator.pop(context);
-                            tampilkanDialogSukses();
-                          },
-                          child: const Text("Simpan dan Kirim Hasil Timbang"),
-                        ),
-                      )
-                    ],
+      context: context,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.all(16),
+        child: StatefulBuilder(builder: (context, setState) {
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Verifikasi Petugas Kandang",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
-                );
-              }),
-            ));
+                ),
+                const SizedBox(
+                  height: 32,
+                ),
+                const Text("Kirim foto data timbang"),
+                const SizedBox(
+                  height: 16,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    final imagePicker = ImagePicker();
+                    var result =
+                        await imagePicker.pickImage(source: ImageSource.camera);
+
+                    if (result != null) {
+                      setState(() {
+                        buktiTimbang = File(result.path);
+                      });
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 180,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 1,
+                        style: BorderStyle.solid,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: buktiTimbang != null
+                        ? Image(
+                            image: FileImage(buktiTimbang!),
+                            fit: BoxFit.cover,
+                          )
+                        : Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Icon(Icons.camera),
+                                Text("Tekan disini untuk mengambil foto"),
+                              ],
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 32,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (buktiTimbang == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Mohon foto data timbang"),
+                          ),
+                        );
+                        return;
+                      }
+                      context.read<SoBloc>().add(KirimBuktiVerifikasiEvent(
+                            timbang,
+                            produk,
+                            buktiTimbang!,
+                          ));
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Simpan dan Kirim Hasil Timbang"),
+                  ),
+                )
+              ],
+            ),
+          );
+        }),
+      ),
+    );
   }
 
-  void tampilkanDialogSukses() {
+  void tampilkanDialogSukses(TimbangProdukSelesaiState state) {
     showDialog(
-        context: context,
-        builder: (context) => Dialog(
-              insetPadding: const EdgeInsets.all(16),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Verifikasi Berhasil",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 40,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const MenuPage(),
-                              ),
-                              (route) => false);
-                        },
-                        child: const Text("Kembali ke Menu Utama"),
-                      ),
-                    )
-                  ],
+      context: context,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.all(16),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Verifikasi Berhasil",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ));
+              const SizedBox(
+                height: 32,
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<SoBloc>().add(ProcessJobEvent(
+                        state.timbang, state.produk, state.listDetail));
+                  },
+                  child: const Text("Kembali ke Menu Utama"),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -27,7 +27,7 @@ class TimbangDetail {
 
   TimbangDetail(this._berat, this._jumlah, this._produkId);
 
-  static const String _tableName = 'timbang_detail';
+  static const String _tableName = 'product_detail';
 
   TimbangDetail.fromMap(Map<String, dynamic> map) {
     _id = map['id'];
@@ -78,7 +78,7 @@ class TimbangDetail {
   static Future<TimbangDetail?> getPreviousDetail(int produkId) async {
     var dbHelper = DbHelper();
     var queryResult = await dbHelper.selectQuery(
-        "SELECT * FROM timbang_detail WHERE produk_id = $produkId ORDER BY id DESC LIMIT 1");
+        "SELECT * FROM $_tableName WHERE produk_id = $produkId ORDER BY id DESC LIMIT 1");
     if (queryResult.isEmpty) {
       return null;
     } else {

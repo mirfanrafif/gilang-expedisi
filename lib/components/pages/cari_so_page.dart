@@ -1,4 +1,5 @@
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
+import 'package:aplikasi_timbang/components/pages/menu_page.dart';
 import 'package:aplikasi_timbang/components/widgets/product_card.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,34 @@ class _CariSOPageState extends State<CariSOPage> {
         if (state is SoNotFound) {
           showErrorSnackbar(context, state.message);
         }
+        if (state is SoComplete) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return Dialog(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        const Text("Timbang Selesai"),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<SoBloc>().add(ResetSoEvent());
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MenuPage(),
+                              ),
+                            );
+                          },
+                          child: const Text("Kembali ke Menu"),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              });
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -39,46 +68,7 @@ class _CariSOPageState extends State<CariSOPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //Text Field untuk cari SO
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: "No. SO",
-                            filled: true,
-                            fillColor: Colors.black12,
-                          ),
-                          keyboardType: TextInputType.number,
-                          controller: _cariSoController,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      ClipOval(
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          color: Theme.of(context).primaryColor,
-                          child: IconButton(
-                            color: Colors.white,
-                            icon: const Icon(Icons.search),
-                            onPressed: () {
-                              if (_cariSoController.text.isNotEmpty) {
-                                int id = int.parse(_cariSoController.text);
-                                context.read<SoBloc>().add(CariSoEvent(id: id));
-                              }
-                            },
-                            splashColor: Colors.white,
-                            highlightColor: Colors.white,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                  getSearchSo(), //Text Field untuk cari SO
                   const SizedBox(
                     height: 16,
                   ),
@@ -89,6 +79,48 @@ class _CariSOPageState extends State<CariSOPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget getSearchSo() {
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+              hintText: "No. SO",
+              filled: true,
+              fillColor: Colors.black12,
+            ),
+            keyboardType: TextInputType.number,
+            controller: _cariSoController,
+          ),
+        ),
+        const SizedBox(
+          width: 16,
+        ),
+        ClipOval(
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            color: Theme.of(context).primaryColor,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                if (_cariSoController.text.isNotEmpty) {
+                  int id = int.parse(_cariSoController.text);
+                  context.read<SoBloc>().add(CariSoEvent(id: id));
+                }
+              },
+              splashColor: Colors.white,
+              highlightColor: Colors.white,
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -122,9 +154,14 @@ class _CariSOPageState extends State<CariSOPage> {
         ),
         ...state.timbang.listProduk
             .map((e) => ProductCard(
+                  timbang: state.timbang,
                   produk: e,
                 ))
             .toList(),
+        const SizedBox(
+          height: 16,
+        ),
+        getSelesaiTimbangBtn(state)
       ];
     } else if (state is SoLoading) {
       return [
@@ -135,5 +172,30 @@ class _CariSOPageState extends State<CariSOPage> {
     } else {
       return [];
     }
+  }
+
+  Widget getSelesaiTimbangBtn(SoLoaded state) {
+    var selesaiTimbangSemuaBarang = state.timbang.listProduk
+        .where((element) => element.selesaiTimbang == false)
+        .isNotEmpty;
+    return SizedBox(
+      width: double.infinity,
+      height: 40,
+      child: ElevatedButton(
+        onPressed: selesaiTimbangSemuaBarang
+            ? null
+            : () {
+                //jika sudah selesai timbang semua produk
+              },
+        child: Text(selesaiTimbangSemuaBarang
+            ? "Selesaikan menimbang semua produk"
+            : "Selesai Timbang"),
+        style: ButtonStyle(
+          backgroundColor: selesaiTimbangSemuaBarang
+              ? MaterialStateProperty.all(Colors.black12)
+              : null,
+        ),
+      ),
+    );
   }
 }

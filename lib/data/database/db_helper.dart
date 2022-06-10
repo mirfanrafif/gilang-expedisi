@@ -26,33 +26,35 @@ class DbHelper {
   void _createDb(Database db, int version) async {
     //buat tabel timbang
     await db.execute('''
-      CREATE TABLE timbang(
+      CREATE TABLE job(
         id INTEGER PRIMARY KEY NOT NULL,
         nomor_so INTEGER NOT NULL,
         nama_kandang VARCHAR(255) NOT NULL,
         alamat_kandang VARCHAR(255) NOT NULL,
         supir_id INTEGER NOT NULL,
-        sync_with_api TINYINT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     ''');
 
     await db.execute('''
-      CREATE TABLE timbang_produk(
+      CREATE TABLE so_product(
         id INTEGER PRIMARY KEY NOT NULL,
         nama_produk INTEGER NOT NULL,
         target_berat INTEGER NOT NULL,
         target_jumlah INTEGER NOT NULL,
         catatan VARCHAR(255),
         timbang_id INTEGER NOT NULL,
-        bukti_verifikasi VARCHAR(255),
+        sync_with_api TINYINT DEFAULT 0,
+        selesai_timbang TINYINT DEFAULT 0,
+        bukti_verifikasi VARCHAR(255) DEFAULT NULL,
+        bukti_verifikasi_url VARCHAR(255) DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     ''');
 
     //buat tabel timbang detail untuk menambah detail timbang
     await db.execute('''
-      CREATE TABLE timbang_detail(
+      CREATE TABLE product_detail(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         berat INTEGER NOT NULL,
         berat_old INTEGER,

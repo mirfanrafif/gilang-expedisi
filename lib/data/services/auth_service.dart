@@ -12,23 +12,24 @@ class AuthService {
       var response = await Dio().post(BASE_URL + '/auth/login',
           data: {'email': email, 'password': password});
 
-      if ((response.statusCode ?? 500) < 400) {
-        var loginResponse = LoginResponse.fromJson(response.data);
+      var loginResponse = LoginResponse.fromJson(response.data);
 
-        return ApiResponse(
-          success: true,
-          data: loginResponse,
-          message: 'Success login',
-        );
-      } else {
-        var errorResponse = ApiErrorResponse.fromJson(response.data);
+      return ApiResponse(
+        success: true,
+        data: loginResponse,
+        message: 'Success login',
+      );
+    } on DioError catch (e) {
+      var errorResponse = e.response;
+      if (errorResponse != null) {
+        var errorMessage = ApiErrorResponse.fromJson(errorResponse.data);
+
         return ApiResponse(
           success: false,
           data: null,
-          message: 'Gagal login: ' + (errorResponse.message ?? ''),
+          message: errorMessage.message ?? '',
         );
       }
-    } on DioError catch (e) {
       return ApiResponse(
         success: false,
         data: null,

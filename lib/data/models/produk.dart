@@ -9,8 +9,12 @@ class TimbangProduk {
   int _targetJumlah = 0;
   String? _catatan;
   int _timbangId = 0;
+  String? buktiVerifikasi;
+  String? buktiVerifikasiUrl;
+  bool selesaiTimbang = false;
   DateTime _createdAt = DateTime.now();
   final List<TimbangDetail> _listTimbangDetail = [];
+  bool syncWithApi = false;
 
   int get id => _id;
   String get namaProduk => _namaProduk;
@@ -19,9 +23,10 @@ class TimbangProduk {
   String? get catatan => _catatan;
   int get timbangId => _timbangId;
   DateTime get createdAt => _createdAt;
+
   List<TimbangDetail> get listTimbangDetail => _listTimbangDetail;
 
-  static const String _tableName = 'timbang_produk';
+  static const String _tableName = 'so_product';
 
   set listTimbangDetail(List<TimbangDetail> newValue) {
     _listTimbangDetail.clear();
@@ -40,8 +45,8 @@ class TimbangProduk {
 
   static Future<TimbangProduk?> findById(int id) async {
     var dbHelper = DbHelper();
-    var queryResult = await dbHelper
-        .selectQuery('SELECT * FROM timbang_produk WHERE id = $id;');
+    var queryResult =
+        await dbHelper.selectQuery('SELECT * FROM $_tableName WHERE id = $id;');
 
     if (queryResult.isEmpty) {
       return null;
@@ -60,7 +65,12 @@ class TimbangProduk {
     _targetJumlah = map['target_jumlah'];
     _catatan = map['catatan'];
     _timbangId = map['timbang_id'];
+    buktiVerifikasi = map['bukti_verifikasi'];
+    buktiVerifikasiUrl = map['bukti_verifikasi_url'];
     _createdAt = DateTime.parse(map['created_at']);
+
+    syncWithApi = map['sync_with_api'] == 1 ? true : false;
+    selesaiTimbang = map['selesai_timbang'] == 1 ? true : false;
   }
 
   //convert from class to database
@@ -72,6 +82,10 @@ class TimbangProduk {
     result['target_jumlah'] = _targetJumlah;
     result['catatan'] = _catatan;
     result['timbang_id'] = _timbangId;
+    result['selesai_timbang'] = selesaiTimbang;
+    result['sync_with_api'] = syncWithApi;
+    result['bukti_verifikasi'] = buktiVerifikasi;
+    result['bukti_verifikasi_url'] = buktiVerifikasiUrl;
     return result;
   }
 
@@ -81,7 +95,12 @@ class TimbangProduk {
 
   Future<void> save() async {
     var dbHelper = DbHelper();
-    _id = await dbHelper.insert(_tableName, toMap());
+    var existingProduk = await findById(id);
+    if (existingProduk != null) {
+      await dbHelper.update(_tableName, toMap(), id);
+    } else {
+      await dbHelper.insert(_tableName, toMap());
+    }
   }
 
   static Future<List<TimbangProduk>> getAll() async {
@@ -98,8 +117,8 @@ class TimbangProduk {
 
   static Future<List<TimbangProduk>> getByTimbangId(int timbangId) async {
     var dbHelper = DbHelper();
-    var result = await dbHelper.selectQuery(
-        "SELECT * FROM timbang_produk WHERE timbang_id = $timbangId");
+    var result = await dbHelper
+        .selectQuery("SELECT * FROM $_tableName WHERE timbang_id = $timbangId");
     var listProduk = result.map((e) => TimbangProduk.fromMap(e)).toList();
     return listProduk;
   }

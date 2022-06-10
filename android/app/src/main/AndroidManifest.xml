@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.aplikasi_timbang">
    <application
-        android:label="aplikasi_timbang"
+        android:label="Armada Gilang"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

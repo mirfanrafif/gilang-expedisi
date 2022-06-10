@@ -8,4 +8,8 @@ class SoPreferences {
   }
 
   int? get timbangSession => _preferences.getInt(_currentTimbang);
+
+  void removeTimbangSession() {
+    _preferences.remove(_currentTimbang);
+  }
 }
