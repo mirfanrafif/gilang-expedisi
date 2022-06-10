@@ -71,6 +71,9 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset('assets/logo.png', width: 168),
+                  const SizedBox(
+                    height: 32,
+                  ),
                   const Text(
                     "Login",
                     style: TextStyle(fontSize: 20),
