@@ -1,3 +1,4 @@
+import 'package:aplikasi_timbang/bloc/timbang/timbang_event.dart';
 import 'package:aplikasi_timbang/components/widgets/riwayat_timbang.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,13 @@ class RiwayatTimbangPage extends StatefulWidget {
 
 class _RiwayatTimbangPageState extends State<RiwayatTimbangPage> {
   final _controller = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<TimbangBloc>().add(LoadTimbangEvent());
+  }
 
   @override
   Widget build(BuildContext context) {

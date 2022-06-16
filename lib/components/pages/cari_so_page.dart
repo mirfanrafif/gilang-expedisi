@@ -36,6 +36,7 @@ class _CariSOPageState extends State<CariSOPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text("Timbang Selesai"),
                         ElevatedButton(

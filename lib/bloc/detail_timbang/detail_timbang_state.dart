@@ -6,7 +6,7 @@ abstract class DetailTimbangState extends Equatable {
   const DetailTimbangState(this.listDetail);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [listDetail];
 }
 
 class DetailTimbangInitial extends DetailTimbangState {

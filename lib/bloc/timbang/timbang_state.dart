@@ -16,8 +16,5 @@ class TimbangLoaded extends TimbangState {
 
   TimbangLoaded(this.listTimbang);
 
-  int targetBerat = 300;
-  int targetEkor = 70;
-
-  List<Object?> get props => [listTimbang, targetBerat, targetEkor];
+  List<Object?> get props => [listTimbang];
 }

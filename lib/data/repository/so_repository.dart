@@ -7,6 +7,8 @@ import 'package:aplikasi_timbang/data/responses/upload_bukti_response.dart';
 import 'package:aplikasi_timbang/data/services/response.dart';
 import 'package:aplikasi_timbang/data/services/so_service.dart';
 
+import '../models/timbang.dart';
+
 class SoRepository {
   var service = SoService();
   var preferences = SoPreferences();
@@ -37,5 +39,10 @@ class SoRepository {
 
   Future<ApiResponse> completeJob(int jobId, String token) {
     return service.completeJob(jobId, token);
+  }
+
+  Future<List<Timbang>> getHistoryTimbang() async {
+    var listTimbang = await Timbang.getAll();
+    return listTimbang;
   }
 }
