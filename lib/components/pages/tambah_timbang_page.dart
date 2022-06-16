@@ -1,3 +1,4 @@
+import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/daftar_timbang_page.dart';
 import 'package:aplikasi_timbang/data/models/produk.dart';
@@ -7,8 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TambahTimbangPage extends StatefulWidget {
-  final TimbangProduk produk;
-  const TambahTimbangPage({Key? key, required this.produk}) : super(key: key);
+  const TambahTimbangPage({Key? key}) : super(key: key);
 
   @override
   State<TambahTimbangPage> createState() => _TambahTimbangPageState();
@@ -21,7 +21,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
       appBar: AppBar(
         title: const Text("Tambah Timbang"),
       ),
-      body: BlocBuilder<SoBloc, SoState>(
+      body: BlocBuilder<DetailTimbangBloc, DetailTimbangState>(
         builder: (context, state) {
           var _beratController = TextEditingController(
               text: state is PreviousTimbangDetailState
@@ -56,8 +56,9 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (state is SelectedProductState) {
-                              context.read<SoBloc>().add(TimbangUlangSebelumnya(
-                                  state.timbang, state.produk));
+                              context.read<DetailTimbangBloc>().add(
+                                  TimbangUlangSebelumnya(
+                                      state.timbang, state.produk));
                             }
                           },
                           child: const Text(
@@ -107,7 +108,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                             if (state is SelectedProductState) {
                               var detail = TimbangDetail(
                                   _berat, _jumlah, state.produk.id);
-                              context.read<SoBloc>().add(
+                              context.read<DetailTimbangBloc>().add(
                                   TambahDetailTimbangEvent(
                                       state.timbang, detail, state.produk));
                               _beratController.text = "";
@@ -120,7 +121,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                               var timbang = state.previous;
                               timbang.berat = _berat;
                               timbang.jumlah = _jumlah;
-                              context.read<SoBloc>().add(
+                              context.read<DetailTimbangBloc>().add(
                                   TambahDetailTimbangEvent(
                                       state.timbang, timbang, state.produk));
                               _beratController.text = "";
@@ -176,7 +177,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
     );
   }
 
-  Color getTargetBeratColor(SoState state) {
+  Color getTargetBeratColor(DetailTimbangState state) {
     if (state is SelectedProductState) {
       return (state.listDetail.isNotEmpty
                   ? state.listDetail
@@ -200,7 +201,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
     }
   }
 
-  Color getTargetJumlahColor(SoState state) {
+  Color getTargetJumlahColor(DetailTimbangState state) {
     if (state is SelectedProductState) {
       return (state.listDetail.isNotEmpty
                   ? state.listDetail
@@ -224,7 +225,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
     }
   }
 
-  String getTargetBeratText(SoState state) {
+  String getTargetBeratText(DetailTimbangState state) {
     if (state is SelectedProductState) {
       return "Target: " + state.produk.targetBerat.toString() + " Kg";
     } else if (state is PreviousTimbangDetailState) {
@@ -234,7 +235,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
     }
   }
 
-  String getTargetJumlahText(SoState state) {
+  String getTargetJumlahText(DetailTimbangState state) {
     if (state is SelectedProductState) {
       return "Target: " + state.produk.targetJumlah.toString() + " Ekor";
     } else if (state is PreviousTimbangDetailState) {
@@ -245,7 +246,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
   }
 
   List<Widget> getBeratForm(
-      SoState state, TextEditingController _beratController) {
+      DetailTimbangState state, TextEditingController _beratController) {
     return [
       const Center(
         child: Text("Masukkan Jumlah Timbang"),
@@ -296,7 +297,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
     ];
   }
 
-  List<Widget> getJumlahForm(SoState state, _jumlahController) {
+  List<Widget> getJumlahForm(DetailTimbangState state, _jumlahController) {
     return [
       const Center(
         child: Text("Masukkan Jumlah Ekor"),

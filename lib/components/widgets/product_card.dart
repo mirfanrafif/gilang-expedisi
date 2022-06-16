@@ -1,3 +1,4 @@
+import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/tambah_timbang_page.dart';
 import 'package:aplikasi_timbang/data/models/produk.dart';
@@ -49,13 +50,13 @@ class ProductCard extends StatelessWidget {
     if (!produk.selesaiTimbang) {
       return ElevatedButton(
         onPressed: () {
-          context.read<SoBloc>().add(SetTimbangProdukEvent(timbang, produk));
+          context
+              .read<DetailTimbangBloc>()
+              .add(SetTimbangProdukEvent(timbang, produk));
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TambahTimbangPage(
-                produk: produk,
-              ),
+              builder: (context) => TambahTimbangPage(),
             ),
           );
         },

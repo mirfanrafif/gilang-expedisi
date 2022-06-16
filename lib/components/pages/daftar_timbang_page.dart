@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/cari_so_page.dart';
 import 'package:aplikasi_timbang/components/pages/menu_page.dart';
@@ -26,14 +27,16 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Daftar Timbang")),
-      body: BlocConsumer<SoBloc, SoState>(listener: (context, state) {
+      body: BlocConsumer<DetailTimbangBloc, DetailTimbangState>(
+          listener: (context, state) {
         if (state is UploadBuktiErrorState) {
           showErrorSnackbar(context, state.errorMessage);
         }
         if (state is TimbangProdukSelesaiState) {
           tampilkanDialogSukses(state);
         }
-        if (state is SoLoaded) {
+        if (state is ProcessJobSuccessState) {
+          context.read<SoBloc>().add(UpdateTimbangEvent(state.timbang));
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -133,7 +136,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
     );
   }
 
-  String getTotalTimbang(SoState state) {
+  String getTotalTimbang(DetailTimbangState state) {
     if (state is SelectedProductState) {
       return state.listDetail.isNotEmpty
           ? state.listDetail
@@ -146,7 +149,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
     }
   }
 
-  String getTotalJumlah(SoState state) {
+  String getTotalJumlah(DetailTimbangState state) {
     if (state is SelectedProductState) {
       return state.listDetail.isNotEmpty
           ? state.listDetail
@@ -241,7 +244,9 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                         );
                         return;
                       }
-                      context.read<SoBloc>().add(KirimBuktiVerifikasiEvent(
+                      context
+                          .read<DetailTimbangBloc>()
+                          .add(KirimBuktiVerifikasiEvent(
                             timbang,
                             produk,
                             buktiTimbang!,
@@ -286,7 +291,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                 height: 40,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.read<SoBloc>().add(ProcessJobEvent(
+                    context.read<DetailTimbangBloc>().add(ProcessJobEvent(
                         state.timbang, state.produk, state.listDetail));
                   },
                   child: const Text("Kembali ke Menu Utama"),

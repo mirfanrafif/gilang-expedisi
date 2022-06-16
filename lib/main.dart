@@ -1,3 +1,4 @@
+import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/bloc/timbang/timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/user/user_bloc.dart';
@@ -22,6 +23,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<DetailTimbangBloc>(
+          create: (context) => DetailTimbangBloc(),
+        ),
         BlocProvider<TimbangBloc>(
           create: (context) => TimbangBloc(),
         ),
