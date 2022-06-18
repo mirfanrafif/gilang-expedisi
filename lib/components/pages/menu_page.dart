@@ -81,7 +81,7 @@ class MenuPage extends StatelessWidget {
                                   ),
                                 );
                               },
-                              text: "Cari SO"),
+                              text: "Cari PO"),
                           const SizedBox(
                             height: 56,
                           ),

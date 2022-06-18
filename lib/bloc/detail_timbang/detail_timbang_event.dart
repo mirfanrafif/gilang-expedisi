@@ -19,16 +19,13 @@ class ProcessJobEvent extends DetailTimbangEvent {
 
 class SetTimbangProdukEvent extends DetailTimbangEvent {
   final TimbangProduk produk;
-  final Timbang timbang;
-  const SetTimbangProdukEvent(this.timbang, this.produk);
+  const SetTimbangProdukEvent(this.produk);
 }
 
 class TambahDetailTimbangEvent extends DetailTimbangEvent {
   final TimbangDetail detail;
   final TimbangProduk produk;
-  final Timbang timbang;
   const TambahDetailTimbangEvent(
-    this.timbang,
     this.detail,
     this.produk,
   );
@@ -39,9 +36,7 @@ class TambahDetailTimbangEvent extends DetailTimbangEvent {
 
 class TimbangUlangSebelumnya extends DetailTimbangEvent {
   final TimbangProduk produk;
-  final Timbang timbang;
   const TimbangUlangSebelumnya(
-    this.timbang,
     this.produk,
   );
 
@@ -52,10 +47,8 @@ class TimbangUlangSebelumnya extends DetailTimbangEvent {
 class KirimBuktiVerifikasiEvent extends DetailTimbangEvent {
   final TimbangProduk produk;
   final File bukti;
-  final Timbang timbang;
 
   const KirimBuktiVerifikasiEvent(
-    this.timbang,
     this.produk,
     this.bukti,
   );
@@ -64,13 +57,11 @@ class KirimBuktiVerifikasiEvent extends DetailTimbangEvent {
 class UpdateTimbangDetailEvent extends DetailTimbangEvent {
   final TimbangDetail detail;
   final TimbangProduk produk;
-  final Timbang timbang;
-  const UpdateTimbangDetailEvent(this.produk, this.detail, this.timbang);
+  const UpdateTimbangDetailEvent(this.produk, this.detail);
 }
 
 class DeleteTimbangDetailEvent extends DetailTimbangEvent {
   final TimbangDetail detail;
   final TimbangProduk produk;
-  final Timbang timbang;
-  const DeleteTimbangDetailEvent(this.produk, this.detail, this.timbang);
+  const DeleteTimbangDetailEvent(this.produk, this.detail);
 }

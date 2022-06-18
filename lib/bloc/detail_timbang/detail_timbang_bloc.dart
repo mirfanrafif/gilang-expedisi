@@ -13,6 +13,7 @@ import '../../data/repository/user_repository.dart';
 import '../../utils/data_mapper.dart';
 
 part 'detail_timbang_event.dart';
+
 part 'detail_timbang_state.dart';
 
 class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
@@ -34,7 +35,6 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
     var timbangDetail = event.detail;
     await timbangDetail.save();
     emit(SelectedProductState(
-      event.timbang,
       event.produk,
       [...state.listDetail, timbangDetail],
     ));
@@ -42,8 +42,7 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
 
   void onSetProduk(
       SetTimbangProdukEvent event, Emitter<DetailTimbangState> emit) async {
-    emit(SelectedProductState(
-        event.timbang, event.produk, event.produk.listTimbangDetail));
+    emit(SelectedProductState(event.produk, event.produk.listTimbangDetail));
   }
 
   Future<void> onTimbangUlang(
@@ -54,14 +53,12 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
       var newListDetail = [...state.listDetail];
       newListDetail.removeLast();
       emit(PreviousTimbangDetailState(
-        event.timbang,
         event.produk,
         newListDetail,
         previousDetail,
       ));
     } else {
       emit(SelectedProductState(
-        event.timbang,
         event.produk,
         state.listDetail,
       ));
@@ -74,15 +71,24 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
     var docPath = await getApplicationDocumentsDirectory();
     print("Besar file lama: " + (await event.bukti.length()).toString());
 
+    var namaFile = 'buktitimbang-' +
+        event.produk.id.toString() +
+        '-' +
+        ((DateTime.now().millisecondsSinceEpoch / 1000).round()).toString() +
+        '.' +
+        event.bukti.path.split('.').last;
+
     var newFile = await FlutterImageCompress.compressAndGetFile(
       event.bukti.path,
-      docPath.path + event.bukti.path.split('/').last,
+      docPath.path + '/' +namaFile,
       quality: 80,
     );
 
     if (newFile == null) {
       return;
     }
+
+    print(newFile.path);
     print("Besar file baru: " + ((await newFile.length()).toString()));
 
     //simpan path bukti verifikasi yang sudah dipindah
@@ -91,8 +97,7 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
 
     await newProduk.save();
 
-    emit(UploadingBuktiTimbangState(
-        event.timbang, event.produk, state.listDetail));
+    emit(UploadingBuktiTimbangState(event.produk, state.listDetail));
 
     //upload bukti
     var token = userRepository.getToken();
@@ -104,13 +109,11 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
       await newProduk.save();
 
       emit(TimbangProdukSelesaiState(
-        event.timbang,
         newProduk,
         state.listDetail,
       ));
     } else {
       emit(UploadBuktiErrorState(
-        event.timbang,
         newProduk,
         response.message,
         state.listDetail,
@@ -158,7 +161,7 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
       var selectedDetail = newListDetail[index];
       newListDetail.removeAt(index);
       emit(UpdateTimbangDetailState(
-          event.timbang, event.produk, newListDetail, selectedDetail, index));
+          event.produk, newListDetail, selectedDetail, index));
     }
   }
 
@@ -173,9 +176,8 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
       await selectedDetail.delete();
       newListDetail.removeAt(index);
 
-      emit(
-          DeleteTimbangDetailState(event.timbang, event.produk, newListDetail));
-      emit(SelectedProductState(event.timbang, event.produk, newListDetail));
+      emit(DeleteTimbangDetailState(event.produk, newListDetail));
+      emit(SelectedProductState(event.produk, newListDetail));
     }
   }
 }

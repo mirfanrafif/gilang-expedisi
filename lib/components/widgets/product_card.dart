@@ -50,13 +50,11 @@ class ProductCard extends StatelessWidget {
     if (!produk.selesaiTimbang) {
       return ElevatedButton(
         onPressed: () {
-          context
-              .read<DetailTimbangBloc>()
-              .add(SetTimbangProdukEvent(timbang, produk));
+          context.read<DetailTimbangBloc>().add(SetTimbangProdukEvent(produk));
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TambahTimbangPage(),
+              builder: (context) => const TambahTimbangPage(),
             ),
           );
         },
@@ -65,7 +63,7 @@ class ProductCard extends StatelessWidget {
     } else {
       return ElevatedButton(
         onPressed: null,
-        child: Text('Selesai ditimbang'),
+        child: const Text('Selesai ditimbang'),
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.black12)),
       );

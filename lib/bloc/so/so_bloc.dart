@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 
 import 'package:aplikasi_timbang/data/models/produk.dart';
 import 'package:aplikasi_timbang/data/models/timbang.dart';

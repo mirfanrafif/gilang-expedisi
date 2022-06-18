@@ -15,20 +15,16 @@ class DetailTimbangInitial extends DetailTimbangState {
 
 class SelectedProductState extends DetailTimbangState {
   final TimbangProduk produk;
-  final Timbang timbang;
 
-  const SelectedProductState(
-      this.timbang, this.produk, List<TimbangDetail> listDetail)
+  const SelectedProductState(this.produk, List<TimbangDetail> listDetail)
       : super(listDetail);
 }
 
 class PreviousTimbangDetailState extends DetailTimbangState {
   final TimbangProduk produk;
   final TimbangDetail previous;
-  final Timbang timbang;
 
   const PreviousTimbangDetailState(
-    this.timbang,
     this.produk,
     List<TimbangDetail> listDetail,
     this.previous,
@@ -37,20 +33,16 @@ class PreviousTimbangDetailState extends DetailTimbangState {
 
 class UploadingBuktiTimbangState extends DetailTimbangState {
   final TimbangProduk produk;
-  final Timbang timbang;
 
-  const UploadingBuktiTimbangState(this.timbang, this.produk, listDetail)
-      : super(listDetail);
+  const UploadingBuktiTimbangState(this.produk, listDetail) : super(listDetail);
 }
 
 class UpdateTimbangDetailState extends DetailTimbangState {
   final TimbangProduk produk;
   final TimbangDetail selected;
   final int position;
-  final Timbang timbang;
 
   const UpdateTimbangDetailState(
-    this.timbang,
     this.produk,
     List<TimbangDetail> listDetail,
     this.selected,
@@ -60,10 +52,8 @@ class UpdateTimbangDetailState extends DetailTimbangState {
 
 class DeleteTimbangDetailState extends DetailTimbangState {
   final TimbangProduk produk;
-  final Timbang timbang;
 
   const DeleteTimbangDetailState(
-    this.timbang,
     this.produk,
     List<TimbangDetail> listDetail,
   ) : super(listDetail);
@@ -71,9 +61,7 @@ class DeleteTimbangDetailState extends DetailTimbangState {
 
 class TimbangProdukSelesaiState extends DetailTimbangState {
   final TimbangProduk produk;
-  final Timbang timbang;
   const TimbangProdukSelesaiState(
-    this.timbang,
     this.produk,
     listDetail,
   ) : super(listDetail);
@@ -81,10 +69,8 @@ class TimbangProdukSelesaiState extends DetailTimbangState {
 
 class UploadBuktiErrorState extends DetailTimbangState {
   final TimbangProduk produk;
-  final Timbang timbang;
   final String errorMessage;
   const UploadBuktiErrorState(
-    this.timbang,
     this.produk,
     this.errorMessage,
     listDetail,

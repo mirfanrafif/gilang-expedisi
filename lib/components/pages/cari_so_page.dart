@@ -1,6 +1,5 @@
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/menu_page.dart';
-import 'package:aplikasi_timbang/components/pages/tambah_timbang_page.dart';
 import 'package:aplikasi_timbang/components/widgets/product_card.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +77,7 @@ class _CariSOPageState extends State<CariSOPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Cari SO"),
+            title: const Text("Cari PO"),
           ),
           body: SingleChildScrollView(
             child: Padding(
@@ -110,7 +109,7 @@ class _CariSOPageState extends State<CariSOPage> {
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,
               ),
-              hintText: "No. SO",
+              hintText: "No. PO",
               filled: true,
               fillColor: Colors.black12,
             ),

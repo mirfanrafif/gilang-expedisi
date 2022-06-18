@@ -22,189 +22,198 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
       appBar: AppBar(
         title: const Text("Tambah Timbang"),
       ),
-      body: BlocBuilder<DetailTimbangBloc, DetailTimbangState>(
-        builder: (context, state) {
-          late TextEditingController _beratController;
+      body: BlocBuilder<SoBloc, SoState>(
+        builder: (context, timbang) {
+          if (timbang is SoLoaded) {
+            return BlocBuilder<DetailTimbangBloc, DetailTimbangState>(
+              builder: (context, state) {
+                late TextEditingController _beratController;
 
-          if (state is PreviousTimbangDetailState) {
-            _beratController =
-                TextEditingController(text: state.previous.berat.toString());
-          } else if (state is UpdateTimbangDetailState) {
-            _beratController =
-                TextEditingController(text: state.selected.berat.toString());
-          } else {
-            _beratController = TextEditingController();
-          }
+                if (state is PreviousTimbangDetailState) {
+                  _beratController = TextEditingController(
+                      text: state.previous.berat.toString());
+                } else if (state is UpdateTimbangDetailState) {
+                  _beratController = TextEditingController(
+                      text: state.selected.berat.toString());
+                } else {
+                  _beratController = TextEditingController();
+                }
 
-          late TextEditingController _jumlahController;
+                late TextEditingController _jumlahController;
 
-          if (state is PreviousTimbangDetailState) {
-            _jumlahController =
-                TextEditingController(text: state.previous.jumlah.toString());
-          } else if (state is UpdateTimbangDetailState) {
-            _jumlahController =
-                TextEditingController(text: state.selected.jumlah.toString());
-          } else {
-            _jumlahController = TextEditingController();
-          }
+                if (state is PreviousTimbangDetailState) {
+                  _jumlahController = TextEditingController(
+                      text: state.previous.jumlah.toString());
+                } else if (state is UpdateTimbangDetailState) {
+                  _jumlahController = TextEditingController(
+                      text: state.selected.jumlah.toString());
+                } else {
+                  _jumlahController = TextEditingController();
+                }
 
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: ListView(
-              children: [
-                ...getBeratForm(state, _beratController),
-                const SizedBox(
-                  height: 32,
-                ),
-                //Jumlah Ekor
-                ...getJumlahForm(state, _jumlahController),
-                const SizedBox(
-                  height: 32,
-                ),
-                //Tombol tombol
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 58,
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ListView(
+                    children: [
+                      ...getBeratForm(state, _beratController),
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      //Jumlah Ekor
+                      ...getJumlahForm(state, _jumlahController),
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      //Tombol tombol
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 58,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (state is SelectedProductState) {
+                                    context.read<DetailTimbangBloc>().add(
+                                        TimbangUlangSebelumnya(state.produk));
+                                  }
+                                },
+                                child: const Text(
+                                  "Kembali ke Sebelumnya",
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                ),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                    const Color.fromARGB(255, 242, 242, 242),
+                                  ),
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                              height: 58,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  var _jumlah =
+                                      int.tryParse(_jumlahController.text) ?? 0;
+                                  var _berat =
+                                      int.tryParse(_beratController.text) ?? 0;
+
+                                  if (_jumlah == 0) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Jumlah tidak boleh kosong")));
+                                    return;
+                                  }
+
+                                  if (_berat == 0) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Berat tidak boleh kosong")));
+                                    return;
+                                  }
+
+                                  if (state is SelectedProductState) {
+                                    var detail = TimbangDetail(
+                                        _berat, _jumlah, state.produk.id);
+                                    context.read<DetailTimbangBloc>().add(
+                                        TambahDetailTimbangEvent(
+                                            detail, state.produk));
+                                    _beratController.text = "";
+                                    _jumlahController.text = "";
+                                    setState(() {
+                                      _jumlah = 0;
+                                      _berat = 0;
+                                    });
+                                  } else if (state
+                                      is PreviousTimbangDetailState) {
+                                    var detail = state.previous;
+                                    detail.berat = _berat;
+                                    detail.jumlah = _jumlah;
+                                    context.read<DetailTimbangBloc>().add(
+                                        TambahDetailTimbangEvent(
+                                            detail, state.produk));
+                                    _beratController.text = "";
+                                    _jumlahController.text = "";
+                                    setState(() {
+                                      _jumlah = 0;
+                                      _berat = 0;
+                                    });
+                                  } else if (state
+                                      is UpdateTimbangDetailState) {
+                                    var detail = state.selected;
+                                    detail.berat = _berat;
+                                    detail.jumlah = _jumlah;
+                                    context.read<DetailTimbangBloc>().add(
+                                        TambahDetailTimbangEvent(
+                                            detail, state.produk));
+                                    _beratController.text = "";
+                                    _jumlahController.text = "";
+                                    setState(() {
+                                      _jumlah = 0;
+                                      _berat = 0;
+                                    });
+                                  }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "Sukses menambahkan hasil timbang")));
+                                },
+                                child: const Text(
+                                  "Tambah Timbang",
+                                  maxLines: 2,
+                                ),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.red),
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 56,
+                      ),
+                      SizedBox(
+                        height: 40,
                         child: ElevatedButton(
                           onPressed: () {
                             if (state is SelectedProductState) {
-                              context.read<DetailTimbangBloc>().add(
-                                  TimbangUlangSebelumnya(
-                                      state.timbang, state.produk));
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const DaftarTimbangPage(),
+                                ),
+                              );
+                            } else {
+                              showErrorSnackbar(context,
+                                  "Selesaikan dahulu timbang yang diubah");
                             }
                           },
-                          child: const Text(
-                            "Kembali ke Sebelumnya",
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 242, 242, 242),
-                            ),
-                            foregroundColor:
-                                MaterialStateProperty.all(Colors.black),
-                          ),
+                          child: const Text("Selesai Timbang"),
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        height: 58,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            var _jumlah =
-                                int.tryParse(_jumlahController.text) ?? 0;
-                            var _berat =
-                                int.tryParse(_beratController.text) ?? 0;
-
-                            if (_jumlah == 0) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content:
-                                          Text("Jumlah tidak boleh kosong")));
-                              return;
-                            }
-
-                            if (_berat == 0) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content:
-                                          Text("Berat tidak boleh kosong")));
-                              return;
-                            }
-
-                            if (state is SelectedProductState) {
-                              var detail = TimbangDetail(
-                                  _berat, _jumlah, state.produk.id);
-                              context.read<DetailTimbangBloc>().add(
-                                  TambahDetailTimbangEvent(
-                                      state.timbang, detail, state.produk));
-                              _beratController.text = "";
-                              _jumlahController.text = "";
-                              setState(() {
-                                _jumlah = 0;
-                                _berat = 0;
-                              });
-                            } else if (state is PreviousTimbangDetailState) {
-                              var timbang = state.previous;
-                              timbang.berat = _berat;
-                              timbang.jumlah = _jumlah;
-                              context.read<DetailTimbangBloc>().add(
-                                  TambahDetailTimbangEvent(
-                                      state.timbang, timbang, state.produk));
-                              _beratController.text = "";
-                              _jumlahController.text = "";
-                              setState(() {
-                                _jumlah = 0;
-                                _berat = 0;
-                              });
-                            } else if (state is UpdateTimbangDetailState) {
-                              var timbang = state.selected;
-                              timbang.berat = _berat;
-                              timbang.jumlah = _jumlah;
-                              context.read<DetailTimbangBloc>().add(
-                                  TambahDetailTimbangEvent(
-                                      state.timbang, timbang, state.produk));
-                              _beratController.text = "";
-                              _jumlahController.text = "";
-                              setState(() {
-                                _jumlah = 0;
-                                _berat = 0;
-                              });
-                            }
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        "Sukses menambahkan hasil timbang")));
-                          },
-                          child: const Text(
-                            "Tambah Timbang",
-                            maxLines: 2,
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 242, 242, 242),
-                            ),
-                            foregroundColor:
-                                MaterialStateProperty.all(Colors.black),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 56,
-                ),
-                SizedBox(
-                  height: 40,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (state is SelectedProductState) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DaftarTimbangPage(),
-                          ),
-                        );
-                      } else {
-                        showErrorSnackbar(
-                            context, "Selesaikan dahulu timbang yang diubah");
-                      }
-                    },
-                    child: const Text("Selesai Timbang"),
+                      )
+                    ],
                   ),
-                )
-              ],
-            ),
-          );
+                );
+              },
+            );
+          } else {
+            return Container();
+          }
         },
       ),
     );
@@ -363,7 +372,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: getTargetJumlahColor(state),
+                // fillColor: getTargetJumlahColor(state),
               ),
               style: const TextStyle(
                 fontSize: 32,
