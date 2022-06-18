@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.aplikasi_timbang">
+    package="com.gilangekspedisi.app">
+        <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="Armada Gilang"
         android:name="${applicationName}"
