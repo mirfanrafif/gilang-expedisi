@@ -36,6 +36,8 @@ class SoNotFound extends SoState {
   List<Object> get props => [id, message];
 }
 
+class CompletingJob extends SoState {}
+
 class SoComplete extends SoState {
-  SoComplete() : super();
+  const SoComplete() : super();
 }

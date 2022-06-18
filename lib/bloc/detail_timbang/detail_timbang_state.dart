@@ -102,3 +102,7 @@ class ProcessJobErrorState extends DetailTimbangState {
   const ProcessJobErrorState(List<TimbangDetail> listDetail, this.message)
       : super(listDetail);
 }
+
+class ProcessingJobState extends DetailTimbangState {
+  const ProcessingJobState(List<TimbangDetail> listDetail) : super(listDetail);
+}

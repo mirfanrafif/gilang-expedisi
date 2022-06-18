@@ -120,6 +120,7 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
 
   Future<void> onJobProcess(
       ProcessJobEvent event, Emitter<DetailTimbangState> emit) async {
+    emit(ProcessingJobState(event.listDetail));
     var requestItems =
         makeJobProcessRequestItems(event.produk, event.listDetail);
     var request = makeJobProcessRequest(

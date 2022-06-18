@@ -30,6 +30,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
       body: BlocConsumer<DetailTimbangBloc, DetailTimbangState>(
           listener: (context, state) {
         if (state is UploadBuktiErrorState) {
+          Navigator.pop(context);
           showErrorSnackbar(context, state.errorMessage);
         }
         if (state is UploadingBuktiTimbangState) {
@@ -66,6 +67,37 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
         if (state is TimbangProdukSelesaiState) {
           Navigator.pop(context);
           tampilkanDialogSukses(state);
+        }
+        if (state is ProcessingJobState) {
+          Navigator.pop(context);
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => Dialog(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text(
+                            "Sedang memproses hasil timbang...",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 32,
+                          ),
+                          Text(
+                            "Mohon tunggu sebentar",
+                          ),
+                        ],
+                      ),
+                    ),
+                  ));
         }
         if (state is ProcessJobSuccessState) {
           context.read<SoBloc>().add(UpdateTimbangEvent(state.timbang));
