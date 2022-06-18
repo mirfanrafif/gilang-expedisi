@@ -4,6 +4,7 @@ class UserEntity {
   String email;
   String role;
   String? profilePhoto;
+  String password;
 
   UserEntity({
     required this.id,
@@ -11,5 +12,6 @@ class UserEntity {
     required this.email,
     required this.role,
     this.profilePhoto,
+    required this.password,
   });
 }

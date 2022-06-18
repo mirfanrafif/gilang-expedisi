@@ -28,12 +28,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     if (response.success) {
       var user = UserEntity(
-          id: response.data?.user?.id ?? 0,
-          fullName: response.data?.user?.fullName ?? '',
-          email: response.data?.user?.email ?? '',
-          role: response.data?.user?.role ?? '');
+        id: response.data?.user?.id ?? 0,
+        fullName: response.data?.user?.fullName ?? '',
+        email: response.data?.user?.email ?? '',
+        role: response.data?.user?.role ?? '',
+        password: event.password,
+      );
 
-      repository.saveUser(user, event.password);
+      repository.saveUser(user);
       repository.saveToken(response.data?.accessToken ?? '');
 
       emit(LoggedInState(

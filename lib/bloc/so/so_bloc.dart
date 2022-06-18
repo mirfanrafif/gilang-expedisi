@@ -44,10 +44,21 @@ class SoBloc extends Bloc<SoEvent, SoState> {
   }
 
   void onCariSo(CariSoEvent event, Emitter<SoState> emit) async {
-    emit(SoLoading());
+    emit(const SoLoading());
     var token = userRepository.getToken();
     var user = userRepository.getUser();
     var response = await soRepository.cariSo(event.id, token ?? '');
+
+    if (!response.success && response.responseCode == 401) {
+      var currentUser = userRepository.getUser();
+      var newToken =
+          await userRepository.login(currentUser.email, currentUser.password);
+
+      userRepository.saveToken(newToken.data?.accessToken ?? '');
+
+      token = userRepository.getToken();
+      response = await soRepository.cariSo(event.id, token ?? '');
+    }
 
     if (!response.success) {
       emit(SoNotFound(
@@ -114,9 +125,20 @@ class SoBloc extends Bloc<SoEvent, SoState> {
     var response =
         await soRepository.completeJob(event.timbang.id, token ?? '');
 
+    if (!response.success && response.responseCode == 401) {
+      var currentUser = userRepository.getUser();
+      var newToken =
+          await userRepository.login(currentUser.email, currentUser.password);
+
+      userRepository.saveToken(newToken.data?.accessToken ?? '');
+
+      token = userRepository.getToken();
+      response = await soRepository.completeJob(event.timbang.id, token ?? '');
+    }
+
     if (response.success) {
       soRepository.removeSession();
-      emit(SoComplete());
+      emit(const SoComplete());
     }
   }
 

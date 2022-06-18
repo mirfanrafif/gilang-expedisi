@@ -26,6 +26,7 @@ class SoService {
       var result = ApiResponse(
           success: true,
           data: CariSoResponse.fromJson(response.data),
+          responseCode: response.statusCode ?? 0,
           message: 'Sukses mencari SO');
       return result;
     } on DioError catch (e) {
@@ -33,6 +34,7 @@ class SoService {
         var result = ApiResponse(
           success: false,
           data: null,
+          responseCode: e.response?.statusCode ?? 500,
           message: 'Sesi telah berakhir. Mohon login kembali.',
         );
         return result;
@@ -40,12 +42,14 @@ class SoService {
       var result = ApiResponse(
           success: false,
           data: null,
+          responseCode: e.response?.statusCode ?? 500,
           message: 'Gagal mencari SO: ' + e.message);
       return result;
     } on TypeError catch (e) {
       var result = ApiResponse(
           success: false,
           data: null,
+          responseCode: 500,
           message: 'Maaf terjadi kesalahan: ' + e.toString());
       return result;
     }
@@ -73,14 +77,15 @@ class SoService {
         List<UploadBuktiResponse> uploadBuktiResponseList = List.from(
             response.data!.map((e) => UploadBuktiResponse.fromJson(e)));
         return ApiResponse(
-          success: true,
-          data: uploadBuktiResponseList.first,
-          message: 'Sukses mengupload bukti verifikasi',
-        );
+            success: true,
+            data: uploadBuktiResponseList.first,
+            message: 'Sukses mengupload bukti verifikasi',
+            responseCode: response.statusCode ?? 200);
       } else {
         return ApiResponse(
           success: false,
           data: null,
+          responseCode: response.statusCode ?? 500,
           message: 'Gagal mengupload bukti verifikasi',
         );
       }
@@ -92,12 +97,14 @@ class SoService {
         return ApiResponse(
           success: false,
           data: null,
+          responseCode: e.response?.statusCode ?? 500,
           message: errorMessage.message ?? '',
         );
       }
       return ApiResponse(
         success: false,
         data: null,
+        responseCode: 500,
         message: 'Gagal mengupload bukti verifikasi: ' + e.message,
       );
     }
@@ -121,6 +128,7 @@ class SoService {
       return ApiResponse(
         success: true,
         data: data,
+        responseCode: response.statusCode ?? 200,
         message: 'Sukses memproses produk',
       );
     } on DioError catch (e) {
@@ -130,12 +138,14 @@ class SoService {
         return ApiResponse(
           success: true,
           data: null,
+          responseCode: e.response?.statusCode ?? 0,
           message: errorMessage.message ?? '',
         );
       } else {
         return ApiResponse(
           success: true,
           data: null,
+          responseCode: 500,
           message: e.message,
         );
       }
@@ -154,7 +164,11 @@ class SoService {
       );
 
       return ApiResponse(
-          success: true, data: null, message: 'Sukses memproses produk');
+        success: true,
+        data: null,
+        message: 'Sukses memproses produk',
+        responseCode: response.statusCode ?? 200,
+      );
     } on DioError catch (e) {
       var errorResponse = e.response;
       if (errorResponse != null) {
@@ -162,12 +176,14 @@ class SoService {
         return ApiResponse(
           success: true,
           data: null,
+          responseCode: e.response?.statusCode ?? 500,
           message: errorMessage.message ?? '',
         );
       } else {
         return ApiResponse(
           success: true,
           data: null,
+          responseCode: 500,
           message: e.message,
         );
       }
@@ -186,6 +202,7 @@ class SoService {
       return ApiResponse(
           success: true,
           data: data.data,
+          responseCode: response.statusCode ?? 200,
           message: 'Sukses mengambil riwayat timbang');
     } on DioError catch (e) {
       if (e.response != null) {
@@ -193,11 +210,13 @@ class SoService {
         return ApiResponse(
             success: false,
             data: null,
+            responseCode: e.response?.statusCode ?? 500,
             message: 'Gagal mengambil riwayat timbang: ' + response.message!);
       }
       return ApiResponse(
           success: false,
           data: null,
+          responseCode: 500,
           message: 'Gagal mengambil riwayat timbang');
     }
   }

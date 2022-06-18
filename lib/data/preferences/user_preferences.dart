@@ -14,26 +14,23 @@ class UserPreferences {
 
   UserEntity getUser() {
     var user = UserEntity(
-        id: preferences.getInt(_id) ?? 0,
-        fullName: preferences.getString(_fullName) ?? "",
-        email: preferences.getString(_email) ?? "",
-        role: preferences.getString(_role) ?? "",
-        profilePhoto: preferences.getString(_profilePhoto));
+      id: preferences.getInt(_id) ?? 0,
+      fullName: preferences.getString(_fullName) ?? "",
+      email: preferences.getString(_email) ?? "",
+      role: preferences.getString(_role) ?? "",
+      profilePhoto: preferences.getString(_profilePhoto),
+      password: preferences.getString(_password) ?? "",
+    );
     return user;
   }
 
-  void setUser(UserEntity user, String password) {
+  void setUser(UserEntity user) {
     preferences.setInt(_id, user.id);
     preferences.setString(_fullName, user.fullName);
     preferences.setString(_email, user.email);
     preferences.setString(_role, user.role);
     preferences.setString(_profilePhoto, user.profilePhoto ?? "");
-    preferences.setString(_password, password);
-  }
-
-  String getPassword() {
-    var password = preferences.getString(_password);
-    return password ?? '';
+    preferences.setString(_password, user.password);
   }
 
   String? getToken() {

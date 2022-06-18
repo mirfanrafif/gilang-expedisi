@@ -80,7 +80,7 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
 
     var newFile = await FlutterImageCompress.compressAndGetFile(
       event.bukti.path,
-      docPath.path + '/' +namaFile,
+      docPath.path + '/' + namaFile,
       quality: 80,
     );
 
@@ -102,6 +102,17 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
     //upload bukti
     var token = userRepository.getToken();
     var response = await soRepository.uploadBukti(newFile, token ?? '');
+
+    if (!response.success && response.responseCode == 401) {
+      var currentUser = userRepository.getUser();
+      var newToken =
+          await userRepository.login(currentUser.email, currentUser.password);
+
+      userRepository.saveToken(newToken.data?.accessToken ?? '');
+
+      token = userRepository.getToken();
+      response = await soRepository.uploadBukti(newFile, token ?? '');
+    }
 
     //jika sukses, maka simpan url nya di database
     if (response.success) {
@@ -133,6 +144,18 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
 
     var response =
         await soRepository.processJob(request, event.timbang.id, token ?? '');
+
+    if (!response.success && response.responseCode == 401) {
+      var currentUser = userRepository.getUser();
+      var newToken =
+          await userRepository.login(currentUser.email, currentUser.password);
+
+      userRepository.saveToken(newToken.data?.accessToken ?? '');
+
+      token = userRepository.getToken();
+      response =
+          await soRepository.processJob(request, event.timbang.id, token ?? '');
+    }
 
     if (response.success) {
       event.produk.syncWithApi = true;

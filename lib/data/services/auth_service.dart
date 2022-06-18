@@ -17,6 +17,7 @@ class AuthService {
       return ApiResponse(
         success: true,
         data: loginResponse,
+        responseCode: response.statusCode ?? 200,
         message: 'Success login',
       );
     } on DioError catch (e) {
@@ -27,12 +28,14 @@ class AuthService {
         return ApiResponse(
           success: false,
           data: null,
+          responseCode: e.response?.statusCode ?? 500,
           message: errorMessage.message ?? '',
         );
       }
       return ApiResponse(
         success: false,
         data: null,
+        responseCode: 500,
         message: 'Gagal login: ' + e.message,
       );
     }
