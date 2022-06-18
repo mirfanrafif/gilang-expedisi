@@ -18,7 +18,7 @@ class RiwayatTimbangItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "SO #" + timbang.soId.toString(),
+                  "PO #" + timbang.soId.toString(),
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

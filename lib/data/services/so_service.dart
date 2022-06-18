@@ -27,7 +27,7 @@ class SoService {
           success: true,
           data: CariSoResponse.fromJson(response.data),
           responseCode: response.statusCode ?? 0,
-          message: 'Sukses mencari SO');
+          message: 'Sukses mencari PO');
       return result;
     } on DioError catch (e) {
       if ((e.response?.statusCode ?? 500) == 401) {
@@ -43,7 +43,7 @@ class SoService {
           success: false,
           data: null,
           responseCode: e.response?.statusCode ?? 500,
-          message: 'Gagal mencari SO: ' + e.message);
+          message: 'Gagal mencari PO: ' + e.message);
       return result;
     } on TypeError catch (e) {
       var result = ApiResponse(

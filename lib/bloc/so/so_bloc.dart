@@ -28,7 +28,7 @@ class SoBloc extends Bloc<SoEvent, SoState> {
       GetSessionEvent event, Emitter<SoState> emit) async {
     var session = soRepository.getSession();
     if (session != null) {
-      //hasil dari cari SO
+      //hasil dari cari PO
       var newTimbang = await Timbang.findById(session);
       var listProduk = await TimbangProduk.getByTimbangId(newTimbang!.id);
 
@@ -72,14 +72,14 @@ class SoBloc extends Bloc<SoEvent, SoState> {
     if (data.isEmpty) {
       emit(SoNotFound(
         id: event.id,
-        message: 'Tidak ada SO dengan nomor ' + event.id.toString(),
+        message: 'Tidak ada PO dengan nomor ' + event.id.toString(),
       ));
       return;
     }
 
     var firstSoResult = data.first;
 
-    //hasil dari cari SO
+    //hasil dari cari PO
     var newTimbang = await Timbang.findById(firstSoResult.id ?? 0);
 
     //mencari data di sqlite, jika sudah ada ambil disana aja
@@ -94,7 +94,7 @@ class SoBloc extends Bloc<SoEvent, SoState> {
       await newTimbang.save();
     }
 
-    //karena di setiap SO ada produk yang ditimbang, contoh ayam hidup, maka buatkan classnya juga
+    //karena di setiap PO ada produk yang ditimbang, contoh ayam hidup, maka buatkan classnya juga
     for (var produk in firstSoResult.products) {
       var newProduk = await TimbangProduk.findById(produk.id ?? 0);
       if (newProduk == null) {

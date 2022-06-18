@@ -40,7 +40,7 @@ class _RiwayatTimbangPageState extends State<RiwayatTimbangPage> {
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none,
                     ),
-                    hintText: "No. SO",
+                    hintText: "No. PO",
                     filled: true,
                     fillColor: Colors.black12,
                   ),
