@@ -8,10 +8,10 @@ abstract class DetailTimbangEvent extends Equatable {
 }
 
 class ProcessJobEvent extends DetailTimbangEvent {
-  TimbangProduk produk;
-  Timbang timbang;
-  List<TimbangDetail> listDetail;
-  ProcessJobEvent(this.timbang, this.produk, this.listDetail);
+  final TimbangProduk produk;
+  final Timbang timbang;
+  final List<TimbangDetail> listDetail;
+  const ProcessJobEvent(this.timbang, this.produk, this.listDetail);
 
   @override
   List<Object> get props => [produk, listDetail];
@@ -59,4 +59,18 @@ class KirimBuktiVerifikasiEvent extends DetailTimbangEvent {
     this.produk,
     this.bukti,
   );
+}
+
+class UpdateTimbangDetailEvent extends DetailTimbangEvent {
+  final TimbangDetail detail;
+  final TimbangProduk produk;
+  final Timbang timbang;
+  const UpdateTimbangDetailEvent(this.produk, this.detail, this.timbang);
+}
+
+class DeleteTimbangDetailEvent extends DetailTimbangEvent {
+  final TimbangDetail detail;
+  final TimbangProduk produk;
+  final Timbang timbang;
+  const DeleteTimbangDetailEvent(this.produk, this.detail, this.timbang);
 }

@@ -34,11 +34,28 @@ class _CariSOPageState extends State<CariSOPage> {
               builder: (context) {
                 return Dialog(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(32),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text("Timbang Selesai"),
+                        const Text(
+                          "Timbang Selesai",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 32,
+                        ),
+                        const Icon(
+                          Icons.check,
+                          size: 128,
+                          color: Colors.green,
+                        ),
+                        const SizedBox(
+                          height: 32,
+                        ),
                         ElevatedButton(
                           onPressed: () {
                             context.read<SoBloc>().add(ResetSoEvent());

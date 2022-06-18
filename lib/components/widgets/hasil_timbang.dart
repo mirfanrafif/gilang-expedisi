@@ -1,38 +1,132 @@
+import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/data/models/timbang_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HasilTimbang extends StatelessWidget {
-  final TimbangDetail timbang;
+  final TimbangDetail detail;
   final int index;
   const HasilTimbang({
     Key? key,
-    required this.timbang,
+    required this.detail,
     required this.index,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text("Timbang " + index.toString()),
-            ),
-            Column(
+    return BlocConsumer<DetailTimbangBloc, DetailTimbangState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
               children: [
-                Text("${timbang.berat.toString()} Kg"),
-                Text("${timbang.jumlah.toString()} Ekor"),
+                Expanded(
+                  child: Text("Timbang " + index.toString()),
+                ),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        if (detail.beratOld != null)
+                          Text(
+                            "${detail.beratOld.toString()} Ekor",
+                            style: const TextStyle(
+                                decoration: TextDecoration.lineThrough),
+                          ),
+                        Text("${detail.berat.toString()} Kg"),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        if (detail.jumlahOld != null)
+                          Text(
+                            "${detail.jumlahOld.toString()} Ekor",
+                            style: const TextStyle(
+                                decoration: TextDecoration.lineThrough),
+                          ),
+                        Text("${detail.jumlah.toString()} Ekor"),
+                      ],
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        if (state is SelectedProductState) {
+                          context.read<DetailTimbangBloc>().add(
+                              UpdateTimbangDetailEvent(
+                                  state.produk, detail, state.timbang));
+                          Navigator.pop(context);
+                        }
+                        if (state is PreviousTimbangDetailState) {
+                          context.read<DetailTimbangBloc>().add(
+                              UpdateTimbangDetailEvent(
+                                  state.produk, detail, state.timbang));
+                          Navigator.pop(context);
+                        }
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => Dialog(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(32),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text(
+                                            "Apakah kamu yakin ingin menghapus data timbang?"),
+                                        const SizedBox(
+                                          height: 64,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text("Tidak"),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                //TODO: Hapus timbang
+                                                if (state
+                                                    is SelectedProductState) {
+                                                  context
+                                                      .read<DetailTimbangBloc>()
+                                                      .add(
+                                                          DeleteTimbangDetailEvent(
+                                                              state.produk,
+                                                              detail,
+                                                              state.timbang));
+                                                }
+                                              },
+                                              child: const Text("Ya"),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ));
+                      },
+                      icon: const Icon(Icons.delete),
+                    ),
+                  ],
+                )
               ],
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.edit),
-            )
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -32,7 +32,39 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
         if (state is UploadBuktiErrorState) {
           showErrorSnackbar(context, state.errorMessage);
         }
+        if (state is UploadingBuktiTimbangState) {
+          Navigator.pop(context);
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => Dialog(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text(
+                            "Sedang mengupload bukti timbang...",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 32,
+                          ),
+                          Text(
+                            "Mohon tunggu sebentar",
+                          ),
+                        ],
+                      ),
+                    ),
+                  ));
+        }
         if (state is TimbangProdukSelesaiState) {
+          Navigator.pop(context);
           tampilkanDialogSukses(state);
         }
         if (state is ProcessJobSuccessState) {
@@ -43,6 +75,22 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                 builder: (context) => const CariSOPage(),
               ),
               (route) => false);
+        }
+        if (state is DeleteTimbangDetailState) {
+          Navigator.pop(context);
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    content: const Text("Sukses menghapus data timbang"),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Tutup"),
+                      )
+                    ],
+                  ));
         }
       }, builder: (context, state) {
         if (state is SelectedProductState) {
@@ -107,7 +155,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                 Expanded(
                   child: ListView.builder(
                     itemBuilder: (context, index) => HasilTimbang(
-                        timbang: state.listDetail[index], index: index + 1),
+                        detail: state.listDetail[index], index: index + 1),
                     itemCount: state.listDetail.length,
                   ),
                 ),
@@ -251,7 +299,6 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                             produk,
                             buktiTimbang!,
                           ));
-                      Navigator.pop(context);
                     },
                     child: const Text("Simpan dan Kirim Hasil Timbang"),
                   ),
@@ -266,6 +313,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
 
   void tampilkanDialogSukses(TimbangProdukSelesaiState state) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => Dialog(
         insetPadding: const EdgeInsets.all(16),
@@ -274,7 +322,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
                 "Verifikasi Berhasil",
@@ -286,16 +334,20 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
               const SizedBox(
                 height: 32,
               ),
-              SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.read<DetailTimbangBloc>().add(ProcessJobEvent(
-                        state.timbang, state.produk, state.listDetail));
-                  },
-                  child: const Text("Kembali ke Menu Utama"),
-                ),
+              const Icon(
+                Icons.check,
+                size: 128,
+                color: Colors.green,
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<DetailTimbangBloc>().add(ProcessJobEvent(
+                      state.timbang, state.produk, state.listDetail));
+                },
+                child: const Text("Kembali ke Menu Utama"),
               )
             ],
           ),

@@ -35,6 +35,40 @@ class PreviousTimbangDetailState extends DetailTimbangState {
   ) : super(listDetail);
 }
 
+class UploadingBuktiTimbangState extends DetailTimbangState {
+  final TimbangProduk produk;
+  final Timbang timbang;
+
+  const UploadingBuktiTimbangState(this.timbang, this.produk, listDetail)
+      : super(listDetail);
+}
+
+class UpdateTimbangDetailState extends DetailTimbangState {
+  final TimbangProduk produk;
+  final TimbangDetail selected;
+  final int position;
+  final Timbang timbang;
+
+  const UpdateTimbangDetailState(
+    this.timbang,
+    this.produk,
+    List<TimbangDetail> listDetail,
+    this.selected,
+    this.position,
+  ) : super(listDetail);
+}
+
+class DeleteTimbangDetailState extends DetailTimbangState {
+  final TimbangProduk produk;
+  final Timbang timbang;
+
+  const DeleteTimbangDetailState(
+    this.timbang,
+    this.produk,
+    List<TimbangDetail> listDetail,
+  ) : super(listDetail);
+}
+
 class TimbangProdukSelesaiState extends DetailTimbangState {
   final TimbangProduk produk;
   final Timbang timbang;

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../data/models/produk.dart';
@@ -24,6 +25,8 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
     on<SetTimbangProdukEvent>(onSetProduk);
     on<TimbangUlangSebelumnya>(onTimbangUlang);
     on<KirimBuktiVerifikasiEvent>(onKirimBuktiVerifikasi);
+    on<UpdateTimbangDetailEvent>(onUpdateTimbangDetail);
+    on<DeleteTimbangDetailEvent>(onDeleteTimbangDetail);
   }
 
   Future<void> onTambahTimbang(
@@ -69,14 +72,27 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
       KirimBuktiVerifikasiEvent event, Emitter<DetailTimbangState> emit) async {
     //file bukti dipindah direktorinya agar tidak mudah terhapus
     var docPath = await getApplicationDocumentsDirectory();
-    var newFile = File(docPath.path + event.bukti.path.split('/').last);
-    newFile.writeAsBytes(event.bukti.readAsBytesSync());
+    print("Besar file lama: " + (await event.bukti.length()).toString());
+
+    var newFile = await FlutterImageCompress.compressAndGetFile(
+      event.bukti.path,
+      docPath.path + event.bukti.path.split('/').last,
+      quality: 80,
+    );
+
+    if (newFile == null) {
+      return;
+    }
+    print("Besar file baru: " + ((await newFile.length()).toString()));
 
     //simpan path bukti verifikasi yang sudah dipindah
     var newProduk = event.produk;
     newProduk.buktiVerifikasi = newFile.path;
-    newProduk.selesaiTimbang = true;
+
     await newProduk.save();
+
+    emit(UploadingBuktiTimbangState(
+        event.timbang, event.produk, state.listDetail));
 
     //upload bukti
     var token = userRepository.getToken();
@@ -116,6 +132,7 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
 
     if (response.success) {
       event.produk.syncWithApi = true;
+      event.produk.selesaiTimbang = true;
       await event.produk.save();
     }
 
@@ -128,5 +145,36 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
     newTimbang.listProduk = newListProduk;
 
     emit(ProcessJobSuccessState(newTimbang));
+  }
+
+  Future<void> onUpdateTimbangDetail(
+      UpdateTimbangDetailEvent event, Emitter<DetailTimbangState> emit) async {
+    var index =
+        state.listDetail.indexWhere((element) => element.id == event.detail.id);
+
+    if (index > -1) {
+      var newListDetail = [...state.listDetail];
+      var selectedDetail = newListDetail[index];
+      newListDetail.removeAt(index);
+      emit(UpdateTimbangDetailState(
+          event.timbang, event.produk, newListDetail, selectedDetail, index));
+    }
+  }
+
+  Future<void> onDeleteTimbangDetail(
+      DeleteTimbangDetailEvent event, Emitter<DetailTimbangState> emit) async {
+    var index =
+        state.listDetail.indexWhere((element) => element.id == event.detail.id);
+
+    if (index > -1) {
+      var newListDetail = [...state.listDetail];
+      var selectedDetail = newListDetail[index];
+      await selectedDetail.delete();
+      newListDetail.removeAt(index);
+
+      emit(
+          DeleteTimbangDetailState(event.timbang, event.produk, newListDetail));
+      emit(SelectedProductState(event.timbang, event.produk, newListDetail));
+    }
   }
 }

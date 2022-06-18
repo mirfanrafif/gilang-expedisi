@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aplikasi_timbang/data/responses/cari_so_response.dart';
 import 'package:aplikasi_timbang/data/responses/job_process_response.dart';
+import 'package:aplikasi_timbang/data/responses/timbang_history_response.dart';
 import 'package:aplikasi_timbang/data/responses/upload_bukti_response.dart';
 import 'package:aplikasi_timbang/data/services/response.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
@@ -170,6 +171,34 @@ class SoService {
           message: e.message,
         );
       }
+    }
+  }
+
+  Future<ApiResponse<List<ProcessJobResponse>?>> getAllJobHistory(
+      String token) async {
+    try {
+      var response = await Dio().get(BASE_URL + '/job/myhistory',
+          options: Options(headers: {
+            'Authorization': 'Bearer ' + token,
+          }));
+
+      var data = JobHistoryResponse.fromJson(response.data);
+      return ApiResponse(
+          success: true,
+          data: data.data,
+          message: 'Sukses mengambil riwayat timbang');
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var response = ApiErrorResponse.fromJson(e.response!.data);
+        return ApiResponse(
+            success: false,
+            data: null,
+            message: 'Gagal mengambil riwayat timbang: ' + response.message!);
+      }
+      return ApiResponse(
+          success: false,
+          data: null,
+          message: 'Gagal mengambil riwayat timbang');
     }
   }
 }

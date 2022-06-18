@@ -3,6 +3,7 @@ import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/daftar_timbang_page.dart';
 import 'package:aplikasi_timbang/data/models/produk.dart';
 import 'package:aplikasi_timbang/data/models/timbang_detail.dart';
+import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,15 +24,29 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
       ),
       body: BlocBuilder<DetailTimbangBloc, DetailTimbangState>(
         builder: (context, state) {
-          var _beratController = TextEditingController(
-              text: state is PreviousTimbangDetailState
-                  ? state.previous.berat.toString()
-                  : "");
+          late TextEditingController _beratController;
 
-          var _jumlahController = TextEditingController(
-              text: state is PreviousTimbangDetailState
-                  ? state.previous.jumlah.toString()
-                  : "");
+          if (state is PreviousTimbangDetailState) {
+            _beratController =
+                TextEditingController(text: state.previous.berat.toString());
+          } else if (state is UpdateTimbangDetailState) {
+            _beratController =
+                TextEditingController(text: state.selected.berat.toString());
+          } else {
+            _beratController = TextEditingController();
+          }
+
+          late TextEditingController _jumlahController;
+
+          if (state is PreviousTimbangDetailState) {
+            _jumlahController =
+                TextEditingController(text: state.previous.jumlah.toString());
+          } else if (state is UpdateTimbangDetailState) {
+            _jumlahController =
+                TextEditingController(text: state.selected.jumlah.toString());
+          } else {
+            _jumlahController = TextEditingController();
+          }
 
           return Padding(
             padding: const EdgeInsets.all(16),
@@ -130,6 +145,19 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                                 _jumlah = 0;
                                 _berat = 0;
                               });
+                            } else if (state is UpdateTimbangDetailState) {
+                              var timbang = state.selected;
+                              timbang.berat = _berat;
+                              timbang.jumlah = _jumlah;
+                              context.read<DetailTimbangBloc>().add(
+                                  TambahDetailTimbangEvent(
+                                      state.timbang, timbang, state.produk));
+                              _beratController.text = "";
+                              _jumlahController.text = "";
+                              setState(() {
+                                _jumlah = 0;
+                                _berat = 0;
+                              });
                             }
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -159,12 +187,17 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                   height: 40,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const DaftarTimbangPage(),
-                        ),
-                      );
+                      if (state is SelectedProductState) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DaftarTimbangPage(),
+                          ),
+                        );
+                      } else {
+                        showErrorSnackbar(
+                            context, "Selesaikan dahulu timbang yang diubah");
+                      }
                     },
                     child: const Text("Selesai Timbang"),
                   ),
@@ -188,6 +221,15 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
           ? Colors.lightGreen.shade100
           : Colors.red.shade100;
     } else if (state is PreviousTimbangDetailState) {
+      return (state.listDetail.isNotEmpty
+                  ? state.listDetail
+                      .map((e) => e.berat)
+                      .reduce((value, element) => value + element)
+                  : 0) >=
+              state.produk.targetBerat
+          ? Colors.lightGreen.shade100
+          : Colors.red.shade100;
+    } else if (state is UpdateTimbangDetailState) {
       return (state.listDetail.isNotEmpty
                   ? state.listDetail
                       .map((e) => e.berat)
@@ -220,6 +262,15 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
               state.produk.targetJumlah
           ? Colors.lightGreen.shade100
           : Colors.red.shade100;
+    } else if (state is UpdateTimbangDetailState) {
+      return (state.listDetail.isNotEmpty
+                  ? state.listDetail
+                      .map((e) => e.jumlah)
+                      .reduce((value, element) => value + element)
+                  : 0) >=
+              state.produk.targetJumlah
+          ? Colors.lightGreen.shade100
+          : Colors.red.shade100;
     } else {
       return Colors.white;
     }
@@ -230,18 +281,10 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
       return "Target: " + state.produk.targetBerat.toString() + " Kg";
     } else if (state is PreviousTimbangDetailState) {
       return "Target: " + state.produk.targetBerat.toString() + " Kg";
+    } else if (state is UpdateTimbangDetailState) {
+      return "Target: " + state.produk.targetBerat.toString() + " Kg";
     } else {
       return "Target: 0 Kg";
-    }
-  }
-
-  String getTargetJumlahText(DetailTimbangState state) {
-    if (state is SelectedProductState) {
-      return "Target: " + state.produk.targetJumlah.toString() + " Ekor";
-    } else if (state is PreviousTimbangDetailState) {
-      return "Target: " + state.produk.targetJumlah.toString() + " Ekor";
-    } else {
-      return "Target: 0 Ekor";
     }
   }
 
@@ -277,10 +320,13 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
           const SizedBox(
             width: 16,
           ),
-          const Text(
-            "Kg",
-            style: TextStyle(
-              fontSize: 32,
+          const SizedBox(
+            width: 75,
+            child: Text(
+              "Kg",
+              style: TextStyle(
+                fontSize: 32,
+              ),
             ),
           )
         ],
@@ -329,10 +375,13 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
           const SizedBox(
             width: 16,
           ),
-          const Text(
-            "Ekor",
-            style: TextStyle(
-              fontSize: 32,
+          const SizedBox(
+            width: 75,
+            child: Text(
+              "Ekor",
+              style: TextStyle(
+                fontSize: 32,
+              ),
             ),
           )
         ],
@@ -340,14 +389,20 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
       const SizedBox(
         height: 16,
       ),
-      Center(
-        child: Text(
-          getTargetJumlahText(state),
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
+      if (state is SelectedProductState)
+        Center(
+          child: Text(
+            'Catatan: ' + (state.produk.catatan ?? ''),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-      ),
+      if (state is UpdateTimbangDetailState)
+        Center(
+          child: Text(
+            'Catatan: ' + (state.produk.catatan ?? ''),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        )
     ];
   }
 }

@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Armada Gilang',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'Poppins',
           primarySwatch: Colors.indigo,

@@ -16,7 +16,7 @@ class ProcessJobResponse {
   final DateTime? updatedAt;
   final int? soId;
   final List<Detail> details;
-  final dynamic user;
+  final User? user;
   final List<Attachment> attachments;
 
   factory ProcessJobResponse.fromJson(Map<String, dynamic> json) {
@@ -33,11 +33,56 @@ class ProcessJobResponse {
       details: json["details"] == null
           ? []
           : List<Detail>.from(json["details"]!.map((x) => Detail.fromJson(x))),
-      user: json["user"],
+      user: json["user"] != null ? User.fromJson(json['user']) : null,
       attachments: json["attachments"] == null
           ? []
           : List<Attachment>.from(
               json["attachments"]!.map((x) => Attachment.fromJson(x))),
+    );
+  }
+}
+
+class User {
+  User({
+    required this.isActive,
+    required this.isTrash,
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.firstName,
+    required this.lastName,
+    required this.role,
+    required this.email,
+    required this.fullName,
+  });
+
+  final bool? isActive;
+  final bool? isTrash;
+  final int? id;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final String? firstName;
+  final dynamic lastName;
+  final String? role;
+  final String? email;
+  final String? fullName;
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      isActive: json["is_active"],
+      isTrash: json["is_trash"],
+      id: json["id"],
+      createdAt: json["created_at"] == null
+          ? null
+          : DateTime.parse(json["created_at"]),
+      updatedAt: json["updated_at"] == null
+          ? null
+          : DateTime.parse(json["updated_at"]),
+      firstName: json["first_name"],
+      lastName: json["last_name"],
+      role: json["role"],
+      email: json["email"],
+      fullName: json["full_name"],
     );
   }
 }
