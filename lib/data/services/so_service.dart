@@ -14,7 +14,7 @@ class SoService {
   Future<ApiResponse<CariSoResponse?>> findSo(int soId, String token) async {
     try {
       var response = await Dio().get(
-        BASE_URL + '/job/find-so',
+        BASE_URL + '/job/find-po',
         queryParameters: {'search': soId.toString()},
         options: Options(
           headers: {

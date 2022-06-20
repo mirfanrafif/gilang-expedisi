@@ -16,11 +16,15 @@ class DbHelper {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'timbang.db';
 
-    return _database ??= await openDatabase(
-      path,
-      version: 1,
-      onCreate: _createDb,
-    );
+    return _database ??=
+        await openDatabase(path, version: 2, onCreate: _createDb,
+            onUpgrade: (Database db, int oldVersion, int newVersion) async {
+      if (newVersion > oldVersion) {
+        for (var i = oldVersion - 1; i < migrations.length; i++) {
+          await db.execute(migrations[i]);
+        }
+      }
+    });
   }
 
   void _createDb(Database db, int version) async {
@@ -32,8 +36,7 @@ class DbHelper {
         nama_kandang VARCHAR(255) NOT NULL,
         alamat_kandang VARCHAR(255) NOT NULL,
         supir_id INTEGER NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        tanggal_pemesanan DATETIME NOT NULL
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     ''');
 
@@ -66,6 +69,10 @@ class DbHelper {
       )
     ''');
   }
+
+  List<String> migrations = [
+    'ALTER TABLE job ADD COLUMN tanggal_pemesanan DATETIME NOT NULL'
+  ];
 
   Future<int> insert(String table, Map<String, dynamic> object) async {
     var db = await init();
