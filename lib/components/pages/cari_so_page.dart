@@ -161,14 +161,17 @@ class _CariSOPageState extends State<CariSOPage> {
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
                 Text("Nama Kandang: " + state.timbang.namaKandang),
+                Text(
+                  'Tanggal pemesanan: ' +
+                      getTanggalPemesanan(state.timbang.tanggalPemesanan),
+                ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Alamat Kandang: "),
-                    getAlamatKandangText(state),
+                    Expanded(child: getAlamatKandangText(state)),
                   ],
                 ),
-                Text('Tanggal pemesanan: ' +
-                    getTanggalPemesanan(state.timbang.tanggalPemesanan))
               ],
             ),
           ),
