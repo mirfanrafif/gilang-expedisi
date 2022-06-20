@@ -6,6 +6,7 @@ import 'package:aplikasi_timbang/components/pages/login_page.dart';
 import 'package:aplikasi_timbang/components/pages/menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'data/preferences/base_preferences.dart';
 
@@ -43,6 +44,12 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Poppins',
           primarySwatch: Colors.indigo,
         ),
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [Locale('id', '')],
         home: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
             if (state is LoggedInState) {

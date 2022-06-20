@@ -90,6 +90,7 @@ class SoBloc extends Bloc<SoEvent, SoState> {
         user.id,
         firstSoResult.customer?.fullName ?? '',
         firstSoResult.shippingAddress ?? '',
+        firstSoResult.transactionDate ?? DateTime.now(),
       );
       await newTimbang.save();
     }

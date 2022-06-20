@@ -32,7 +32,8 @@ class DbHelper {
         nama_kandang VARCHAR(255) NOT NULL,
         alamat_kandang VARCHAR(255) NOT NULL,
         supir_id INTEGER NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        tanggal_pemesanan DATETIME NOT NULL
       )
     ''');
 

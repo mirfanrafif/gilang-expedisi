@@ -7,6 +7,7 @@ class Timbang {
   int _supirId = 0;
   String _namaKandang = '';
   String _alamatKandang = '';
+  DateTime tanggalPemesanan = DateTime.now();
   DateTime _createdAt = DateTime.now();
 
   final List<TimbangProduk> _listProduk = [];
@@ -32,6 +33,7 @@ class Timbang {
     this._supirId,
     this._namaKandang,
     this._alamatKandang,
+    this.tanggalPemesanan,
   );
 
   static Future<Timbang?> findById(int id) async {
@@ -57,6 +59,7 @@ class Timbang {
     _createdAt = DateTime.parse(map['created_at']);
     _namaKandang = map['nama_kandang'];
     _alamatKandang = map['alamat_kandang'];
+    tanggalPemesanan = DateTime.parse(map['tanggal_pemesanan']);
   }
 
   Map<String, dynamic> toMap() {
@@ -65,6 +68,7 @@ class Timbang {
     map['nomor_so'] = _soId;
     map['supir_id'] = _supirId;
     map['nama_kandang'] = _namaKandang;
+    map['tanggal_pemesanan'] = tanggalPemesanan.toIso8601String();
     map['alamat_kandang'] = _alamatKandang;
     return map;
   }

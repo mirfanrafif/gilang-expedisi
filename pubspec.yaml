@@ -30,6 +30,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations: # Add this line
+    sdk: flutter # Add this line
+
   # for bloc
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
@@ -53,6 +56,12 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+
+  #Url launcher to open maps link
+  url_launcher: ^6.1.3
+
+  # Localization
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

@@ -57,6 +57,7 @@ class SoRepository {
             timbangItem.user!.id!,
             '',
             '',
+            DateTime.now(),
           );
           await existing.save();
         }

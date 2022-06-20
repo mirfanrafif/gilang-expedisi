@@ -4,6 +4,9 @@ import 'package:aplikasi_timbang/components/widgets/product_card.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/date_symbol_data_file.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CariSOPage extends StatefulWidget {
   const CariSOPage({Key? key}) : super(key: key);
@@ -158,7 +161,14 @@ class _CariSOPageState extends State<CariSOPage> {
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
                 Text("Nama Kandang: " + state.timbang.namaKandang),
-                Text("Alamat Kandang: " + state.timbang.alamatKandang),
+                Row(
+                  children: [
+                    const Text("Alamat Kandang: "),
+                    getAlamatKandangText(state),
+                  ],
+                ),
+                Text('Tanggal pemesanan: ' +
+                    getTanggalPemesanan(state.timbang.tanggalPemesanan))
               ],
             ),
           ),
@@ -190,6 +200,34 @@ class _CariSOPageState extends State<CariSOPage> {
     } else {
       return [];
     }
+  }
+
+  Widget getAlamatKandangText(SoLoaded state) {
+    var alamatKandang = state.timbang.alamatKandang;
+    if (alamatKandang.contains(RegExp(r'https?:\/\/.*'))) {
+      return GestureDetector(
+        child: Text(
+          state.timbang.alamatKandang,
+          style: TextStyle(color: Colors.blue.shade900),
+        ),
+        onTap: () async {
+          if (!(await launchUrl(
+            Uri.parse(alamatKandang),
+            mode: LaunchMode.externalApplication,
+          ))) {
+            showErrorSnackbar(context, 'Tidak dapat membuka link');
+          }
+        },
+      );
+    } else {
+      return Text(state.timbang.alamatKandang);
+    }
+  }
+
+  String getTanggalPemesanan(DateTime tanggalPemesanan) {
+    // initializeDateFormatting('id_ID', filePath)
+    return DateFormat.yMMMMEEEEd(Localizations.localeOf(context).toString())
+        .format(tanggalPemesanan);
   }
 
   Widget getSelesaiTimbangBtn(SoLoaded state) {
