@@ -25,9 +25,16 @@ class HasilTimbang extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Row(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: Text("Timbang " + index.toString()),
+                        child: Text(
+                          "Timbang " + (index + 1).toString(),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                       Column(
                         children: [
@@ -55,83 +62,72 @@ class HasilTimbang extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Column(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              if (state is SelectedProductState) {
-                                context
-                                    .read<DetailTimbangBloc>()
-                                    .add(UpdateTimbangDetailEvent(
-                                      state.produk,
-                                      detail,
-                                    ));
-                                Navigator.pop(context);
-                              }
-                              if (state is PreviousTimbangDetailState) {
-                                context
-                                    .read<DetailTimbangBloc>()
-                                    .add(UpdateTimbangDetailEvent(
-                                      state.produk,
-                                      detail,
-                                    ));
-                                Navigator.pop(context);
-                              }
-                            },
-                            icon: const Icon(Icons.edit),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => Dialog(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(32),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Text(
-                                                  "Apakah kamu yakin ingin menghapus data timbang?"),
-                                              const SizedBox(
-                                                height: 64,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: const Text("Tidak"),
-                                                  ),
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      //TODO: Hapus timbang
-                                                      if (state
-                                                          is SelectedProductState) {
-                                                        context
-                                                            .read<
-                                                                DetailTimbangBloc>()
-                                                            .add(
-                                                                DeleteTimbangDetailEvent(
-                                                              state.produk,
-                                                              detail,
-                                                            ));
-                                                      }
-                                                    },
-                                                    child: const Text("Ya"),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
+                      IconButton(
+                        color: Colors.blue.shade900,
+                        onPressed: () {
+                          if (state is SelectedProductState) {
+                            context
+                                .read<DetailTimbangBloc>()
+                                .add(UpdateTimbangDetailEvent(
+                                  state.produk,
+                                  detail,
+                                ));
+                            Navigator.pop(context);
+                          }
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        color: Colors.red,
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => Dialog(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(32),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Text(
+                                              "Apakah kamu yakin ingin menghapus data timbang?"),
+                                          const SizedBox(
+                                            height: 64,
                                           ),
-                                        ),
-                                      ));
-                            },
-                            icon: const Icon(Icons.delete),
-                          ),
-                        ],
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text("Tidak"),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  //TODO: Hapus timbang
+                                                  if (state
+                                                      is SelectedProductState) {
+                                                    context
+                                                        .read<
+                                                            DetailTimbangBloc>()
+                                                        .add(
+                                                            DeleteTimbangDetailEvent(
+                                                          state.produk,
+                                                          detail,
+                                                        ));
+                                                  }
+                                                },
+                                                child: const Text("Ya"),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ));
+                        },
+                        icon: const Icon(Icons.delete),
                       )
                     ],
                   ),

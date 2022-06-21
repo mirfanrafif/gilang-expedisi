@@ -65,3 +65,14 @@ class DeleteTimbangDetailEvent extends DetailTimbangEvent {
   final TimbangProduk produk;
   const DeleteTimbangDetailEvent(this.produk, this.detail);
 }
+
+class SubmitUpdateTimbangEvent extends DetailTimbangEvent {
+  final TimbangDetail detail;
+  final TimbangProduk produk;
+  final int position;
+  const SubmitUpdateTimbangEvent(
+    this.produk,
+    this.detail,
+    this.position,
+  );
+}

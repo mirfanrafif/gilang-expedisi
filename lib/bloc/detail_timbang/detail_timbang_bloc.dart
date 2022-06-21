@@ -28,6 +28,7 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
     on<KirimBuktiVerifikasiEvent>(onKirimBuktiVerifikasi);
     on<UpdateTimbangDetailEvent>(onUpdateTimbangDetail);
     on<DeleteTimbangDetailEvent>(onDeleteTimbangDetail);
+    on<SubmitUpdateTimbangEvent>(onSubmitUpdate);
   }
 
   Future<void> onTambahTimbang(
@@ -63,6 +64,15 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
         state.listDetail,
       ));
     }
+  }
+
+  Future<void> onSubmitUpdate(
+      SubmitUpdateTimbangEvent event, Emitter<DetailTimbangState> emit) async {
+    await event.detail.save();
+
+    state.listDetail[event.position] = event.detail;
+
+    emit(SelectedProductState(event.produk, state.listDetail));
   }
 
   Future<void> onKirimBuktiVerifikasi(
@@ -182,7 +192,6 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
     if (index > -1) {
       var newListDetail = [...state.listDetail];
       var selectedDetail = newListDetail[index];
-      newListDetail.removeAt(index);
       emit(UpdateTimbangDetailState(
           event.produk, newListDetail, selectedDetail, index));
     }

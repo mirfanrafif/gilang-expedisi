@@ -153,9 +153,13 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                                     var detail = state.selected;
                                     detail.berat = _berat;
                                     detail.jumlah = _jumlah;
-                                    context.read<DetailTimbangBloc>().add(
-                                        TambahDetailTimbangEvent(
-                                            detail, state.produk));
+                                    context
+                                        .read<DetailTimbangBloc>()
+                                        .add(SubmitUpdateTimbangEvent(
+                                          state.produk,
+                                          detail,
+                                          state.position,
+                                        ));
                                     _beratController.text = "";
                                     _jumlahController.text = "";
                                     setState(() {
@@ -164,9 +168,13 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
                                     });
                                   }
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              "Sukses menambahkan hasil timbang")));
+                                    const SnackBar(
+                                      content: Text(
+                                          "Sukses menambahkan hasil timbang"),
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
                                 },
                                 child: const Text(
                                   "Tambah Timbang",

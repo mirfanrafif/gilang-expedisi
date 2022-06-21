@@ -191,8 +191,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                       Expanded(
                         child: ListView.builder(
                           itemBuilder: (context, index) => HasilTimbang(
-                              detail: state.listDetail[index],
-                              index: index + 1),
+                              detail: state.listDetail[index], index: index),
                           itemCount: state.listDetail.length,
                         ),
                       ),
