@@ -4,7 +4,6 @@ import 'package:aplikasi_timbang/components/widgets/product_card.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 

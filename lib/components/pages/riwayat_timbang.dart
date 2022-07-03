@@ -18,7 +18,6 @@ class _RiwayatTimbangPageState extends State<RiwayatTimbangPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     context.read<TimbangBloc>().add(LoadTimbangEvent());
   }

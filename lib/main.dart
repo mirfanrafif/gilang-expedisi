@@ -44,12 +44,12 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Poppins',
           primarySwatch: Colors.indigo,
         ),
-        localizationsDelegates: [
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [Locale('id', '')],
+        supportedLocales: const [Locale('id', '')],
         home: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
             if (state is LoggedInState) {

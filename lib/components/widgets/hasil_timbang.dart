@@ -105,7 +105,6 @@ class HasilTimbang extends StatelessWidget {
                                               ),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  //TODO: Hapus timbang
                                                   if (state
                                                       is SelectedProductState) {
                                                     context

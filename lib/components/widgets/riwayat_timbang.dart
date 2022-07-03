@@ -24,7 +24,7 @@ class RiwayatTimbangItem extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                Text("Status: Selesai"),
+                const Text("Status: Selesai"),
                 Text(timbang.createdAt.toLocal().toString())
               ],
             ),
@@ -32,7 +32,7 @@ class RiwayatTimbangItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(getTargetTimbang()),
-                Text("400 Ekor"),
+                const Text("400 Ekor"),
               ],
             )
           ],

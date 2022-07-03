@@ -1,5 +1,4 @@
 import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
-import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/tambah_timbang_page.dart';
 import 'package:aplikasi_timbang/data/models/produk.dart';
 import 'package:flutter/material.dart';

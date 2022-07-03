@@ -14,7 +14,7 @@ class SoService {
   Future<ApiResponse<CariSoResponse?>> findSo(int soId, String token) async {
     try {
       var response = await Dio().get(
-        BASE_URL + '/job/find-po',
+        baseUrl + '/job/find-po',
         queryParameters: {'search': soId.toString()},
         options: Options(
           headers: {
@@ -64,7 +64,7 @@ class SoService {
       });
 
       var response = await Dio().post(
-        BASE_URL + "/job/upload-image",
+        baseUrl + "/job/upload-image",
         data: body,
         options: Options(
           headers: {
@@ -114,7 +114,7 @@ class SoService {
       Map<String, dynamic> request, int jobId, String token) async {
     try {
       var response = await Dio().post(
-        BASE_URL + '/job/process/$jobId',
+        baseUrl + '/job/process/$jobId',
         data: request,
         options: Options(
           headers: {
@@ -155,7 +155,7 @@ class SoService {
   Future<ApiResponse> completeJob(int jobId, String token) async {
     try {
       var response = await Dio().patch(
-        BASE_URL + '/job/complete/$jobId',
+        baseUrl + '/job/complete/$jobId',
         options: Options(
           headers: {
             'Authorization': 'Bearer ' + token,
@@ -193,7 +193,7 @@ class SoService {
   Future<ApiResponse<List<ProcessJobResponse>?>> getAllJobHistory(
       String token) async {
     try {
-      var response = await Dio().get(BASE_URL + '/job/myhistory',
+      var response = await Dio().get(baseUrl + '/job/myhistory',
           options: Options(headers: {
             'Authorization': 'Bearer ' + token,
           }));

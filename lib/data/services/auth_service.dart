@@ -9,7 +9,7 @@ class AuthService {
   Future<ApiResponse<LoginResponse?>> login(
       String email, String password) async {
     try {
-      var response = await Dio().post(BASE_URL + '/auth/login',
+      var response = await Dio().post(baseUrl + '/auth/login',
           data: {'email': email, 'password': password});
 
       var loginResponse = LoginResponse.fromJson(response.data);

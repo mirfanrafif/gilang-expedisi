@@ -1,5 +1,4 @@
 import 'package:aplikasi_timbang/data/models/timbang.dart';
-import 'package:aplikasi_timbang/data/models/timbang_detail.dart';
 import 'package:equatable/equatable.dart';
 
 class TimbangState extends Equatable {
@@ -14,7 +13,8 @@ class TimbangLoading extends TimbangState {}
 class TimbangLoaded extends TimbangState {
   final List<Timbang> listTimbang;
 
-  TimbangLoaded(this.listTimbang);
+  const TimbangLoaded(this.listTimbang);
 
+  @override
   List<Object?> get props => [listTimbang];
 }

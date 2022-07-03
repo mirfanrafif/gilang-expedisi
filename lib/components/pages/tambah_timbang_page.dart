@@ -1,7 +1,6 @@
 import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/daftar_timbang_page.dart';
-import 'package:aplikasi_timbang/data/models/produk.dart';
 import 'package:aplikasi_timbang/data/models/timbang_detail.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -374,9 +373,9 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
             child: TextField(
               controller: _jumlahController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "0",
-                border: const OutlineInputBorder(
+                border: OutlineInputBorder(
                   borderSide: BorderSide.none,
                 ),
                 filled: true,

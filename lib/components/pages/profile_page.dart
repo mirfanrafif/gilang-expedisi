@@ -31,7 +31,7 @@ class ProfilePage extends StatelessWidget {
               return Column(
                 children: [
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       width: double.infinity,
                       child: Column(
                         children: [

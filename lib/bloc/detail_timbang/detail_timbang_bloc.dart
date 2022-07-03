@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -79,7 +80,7 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
       KirimBuktiVerifikasiEvent event, Emitter<DetailTimbangState> emit) async {
     //file bukti dipindah direktorinya agar tidak mudah terhapus
     var docPath = await getApplicationDocumentsDirectory();
-    print("Besar file lama: " + (await event.bukti.length()).toString());
+    log("Besar file lama: " + (await event.bukti.length()).toString());
 
     var namaFile = 'buktitimbang-' +
         event.produk.id.toString() +
@@ -98,8 +99,8 @@ class DetailTimbangBloc extends Bloc<DetailTimbangEvent, DetailTimbangState> {
       return;
     }
 
-    print(newFile.path);
-    print("Besar file baru: " + ((await newFile.length()).toString()));
+    log(newFile.path);
+    log("Besar file baru: " + ((await newFile.length()).toString()));
 
     //simpan path bukti verifikasi yang sudah dipindah
     var newProduk = event.produk;
