@@ -1,5 +1,5 @@
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
-import 'package:aplikasi_timbang/components/pages/menu_page.dart';
+import 'package:aplikasi_timbang/components/pages/assigned_job_list_page.dart';
 import 'package:aplikasi_timbang/components/widgets/product_card.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +63,8 @@ class _CariSOPageState extends State<CariSOPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const MenuPage(),
+                                builder: (context) =>
+                                    const AssignedJobListPage(),
                               ),
                             );
                           },

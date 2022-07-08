@@ -2,8 +2,8 @@ import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/bloc/timbang/timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/user/user_bloc.dart';
+import 'package:aplikasi_timbang/components/pages/assigned_job_list_page.dart';
 import 'package:aplikasi_timbang/components/pages/login_page.dart';
-import 'package:aplikasi_timbang/components/pages/menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         home: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
             if (state is LoggedInState) {
-              return const MenuPage();
+              return const AssignedJobListPage();
             } else {
               return const LoginPage();
             }

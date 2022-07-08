@@ -44,6 +44,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       ));
     } else {
       emit(LoginErrorState(response.message));
+      emit(UserInitial());
     }
   }
 
