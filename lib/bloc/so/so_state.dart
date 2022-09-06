@@ -15,25 +15,12 @@ class SoLoading extends SoState {
   const SoLoading() : super();
 }
 
-class SoLoaded extends SoState {
+class SoSelected extends SoState {
   final Timbang timbang;
-
-  const SoLoaded(this.timbang) : super();
+  const SoSelected({required this.timbang});
 
   @override
   List<Object> get props => [timbang];
-}
-
-class SoNotFound extends SoState {
-  final int id;
-  final String message;
-  const SoNotFound({
-    required this.id,
-    required this.message,
-  }) : super();
-
-  @override
-  List<Object> get props => [id, message];
 }
 
 class CompletingJob extends SoState {}

@@ -23,7 +23,7 @@ class _TambahTimbangPageState extends State<TambahTimbangPage> {
       ),
       body: BlocBuilder<SoBloc, SoState>(
         builder: (context, timbang) {
-          if (timbang is SoLoaded) {
+          if (timbang is SoSelected) {
             return BlocBuilder<DetailTimbangBloc, DetailTimbangState>(
               builder: (context, state) {
                 late TextEditingController _beratController;

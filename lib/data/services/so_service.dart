@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aplikasi_timbang/data/responses/cari_so_response.dart';
 import 'package:aplikasi_timbang/data/responses/job_process_response.dart';
+import 'package:aplikasi_timbang/data/responses/job_response.dart';
 import 'package:aplikasi_timbang/data/responses/timbang_history_response.dart';
 import 'package:aplikasi_timbang/data/responses/upload_bukti_response.dart';
 import 'package:aplikasi_timbang/data/services/response.dart';
@@ -26,6 +27,54 @@ class SoService {
       var result = ApiResponse(
           success: true,
           data: CariSoResponse.fromJson(response.data),
+          responseCode: response.statusCode ?? 0,
+          message: 'Sukses mencari PO');
+      return result;
+    } on DioError catch (e) {
+      if ((e.response?.statusCode ?? 500) == 401) {
+        var result = ApiResponse(
+          success: false,
+          data: null,
+          responseCode: e.response?.statusCode ?? 500,
+          message: 'Sesi telah berakhir. Mohon login kembali.',
+        );
+        return result;
+      }
+      var result = ApiResponse(
+          success: false,
+          data: null,
+          responseCode: e.response?.statusCode ?? 500,
+          message: 'Gagal mencari PO: ' + e.message);
+      return result;
+    } on TypeError catch (e) {
+      var result = ApiResponse(
+          success: false,
+          data: null,
+          responseCode: 500,
+          message: 'Maaf terjadi kesalahan: ' + e.toString());
+      return result;
+    }
+  }
+
+  Future<ApiResponse<ListJobResponse?>> getJobByUserId(
+      int userId, String token) async {
+    try {
+      var response = await Dio().get(
+        baseUrl + '/job',
+        queryParameters: {
+          'filter.user.id': '\$eq:' + userId.toString(),
+          'filter.status': '\$eq:' + userId.toString(),
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ' + token,
+          },
+        ),
+      );
+
+      var result = ApiResponse(
+          success: true,
+          data: ListJobResponse.fromJson(response.data),
           responseCode: response.statusCode ?? 0,
           message: 'Sukses mencari PO');
       return result;

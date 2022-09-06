@@ -7,14 +7,12 @@ abstract class SoEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class CariSoEvent extends SoEvent {
-  final int id;
-  const CariSoEvent({
-    required this.id,
-  });
+class SelectSOEvent extends SoEvent {
+  final Timbang timbang;
+  const SelectSOEvent({required this.timbang});
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [];
 }
 
 class CompleteJobEvent extends SoEvent {

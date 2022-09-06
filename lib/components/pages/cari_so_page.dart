@@ -2,6 +2,7 @@ import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/components/pages/assigned_job_list_page.dart';
 import 'package:aplikasi_timbang/components/widgets/product_card.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
+import 'package:aplikasi_timbang/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -26,10 +27,8 @@ class _CariSOPageState extends State<CariSOPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<SoBloc, SoState>(
       listener: (context, state) {
-        if (state is SoNotFound) {
-          showErrorSnackbar(context, state.message);
-        }
         if (state is SoComplete) {
+          //dialog selesai timbang semua produk
           showDialog(
               context: context,
               builder: (context) {
@@ -80,7 +79,7 @@ class _CariSOPageState extends State<CariSOPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Cari PO"),
+            title: const Text("Detail PO"),
           ),
           body: SingleChildScrollView(
             child: Padding(
@@ -89,7 +88,7 @@ class _CariSOPageState extends State<CariSOPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  getSearchSo(), //Text Field untuk cari SO
+                  // getSearchSo(), //Text Field untuk cari SO
                   const SizedBox(
                     height: 16,
                   ),
@@ -103,50 +102,50 @@ class _CariSOPageState extends State<CariSOPage> {
     );
   }
 
-  Widget getSearchSo() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
-              hintText: "No. PO",
-              filled: true,
-              fillColor: Colors.black12,
-            ),
-            keyboardType: TextInputType.number,
-            controller: _cariSoController,
-          ),
-        ),
-        const SizedBox(
-          width: 16,
-        ),
-        ClipOval(
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            color: Theme.of(context).primaryColor,
-            child: IconButton(
-              color: Colors.white,
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                if (_cariSoController.text.isNotEmpty) {
-                  int id = int.parse(_cariSoController.text);
-                  context.read<SoBloc>().add(CariSoEvent(id: id));
-                }
-              },
-              splashColor: Colors.white,
-              highlightColor: Colors.white,
-            ),
-          ),
-        )
-      ],
-    );
-  }
+  // Widget getSearchSo() {
+  //   return Row(
+  //     children: [
+  //       Expanded(
+  //         child: TextField(
+  //           decoration: const InputDecoration(
+  //             border: OutlineInputBorder(
+  //               borderSide: BorderSide.none,
+  //             ),
+  //             hintText: "No. PO",
+  //             filled: true,
+  //             fillColor: Colors.black12,
+  //           ),
+  //           keyboardType: TextInputType.number,
+  //           controller: _cariSoController,
+  //         ),
+  //       ),
+  //       const SizedBox(
+  //         width: 16,
+  //       ),
+  //       ClipOval(
+  //         child: Container(
+  //           padding: const EdgeInsets.all(8),
+  //           color: Theme.of(context).primaryColor,
+  //           child: IconButton(
+  //             color: Colors.white,
+  //             icon: const Icon(Icons.search),
+  //             onPressed: () {
+  //               if (_cariSoController.text.isNotEmpty) {
+  //                 int id = int.parse(_cariSoController.text);
+  //                 context.read<SoBloc>().add(GetSoByUserIdEvent(id: id));
+  //               }
+  //             },
+  //             splashColor: Colors.white,
+  //             highlightColor: Colors.white,
+  //           ),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   List<Widget> getSoDetail(SoState state) {
-    if (state is SoLoaded) {
+    if (state is SoSelected) {
       return [
         Card(
           child: Container(
@@ -163,7 +162,8 @@ class _CariSOPageState extends State<CariSOPage> {
                 Text("Nama Kandang: " + state.timbang.namaKandang),
                 Text(
                   'Tanggal pemesanan: ' +
-                      getTanggalPemesanan(state.timbang.tanggalPemesanan),
+                      GilangDateUtils.getTanggalPemesanan(
+                          state.timbang.tanggalPemesanan, context),
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,7 +205,7 @@ class _CariSOPageState extends State<CariSOPage> {
     }
   }
 
-  Widget getAlamatKandangText(SoLoaded state) {
+  Widget getAlamatKandangText(SoSelected state) {
     var alamatKandang = state.timbang.alamatKandang;
     if (alamatKandang.contains(RegExp(r'https?:\/\/.*'))) {
       return GestureDetector(
@@ -227,13 +227,7 @@ class _CariSOPageState extends State<CariSOPage> {
     }
   }
 
-  String getTanggalPemesanan(DateTime tanggalPemesanan) {
-    // initializeDateFormatting('id_ID', filePath)
-    return DateFormat.yMMMMEEEEd(Localizations.localeOf(context).toString())
-        .format(tanggalPemesanan);
-  }
-
-  Widget getSelesaiTimbangBtn(SoLoaded state) {
+  Widget getSelesaiTimbangBtn(SoSelected state) {
     var selesaiTimbangSemuaBarang = state.timbang.listProduk
         .where((element) => element.selesaiTimbang == false)
         .isNotEmpty;

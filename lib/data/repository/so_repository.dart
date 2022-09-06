@@ -4,6 +4,7 @@ import 'package:aplikasi_timbang/data/preferences/so_preferences.dart';
 import 'package:aplikasi_timbang/data/preferences/user_preferences.dart';
 import 'package:aplikasi_timbang/data/responses/cari_so_response.dart';
 import 'package:aplikasi_timbang/data/responses/job_process_response.dart';
+import 'package:aplikasi_timbang/data/responses/job_response.dart';
 import 'package:aplikasi_timbang/data/responses/upload_bukti_response.dart';
 import 'package:aplikasi_timbang/data/services/response.dart';
 import 'package:aplikasi_timbang/data/services/so_service.dart';
@@ -16,6 +17,10 @@ class SoRepository {
   var userPref = UserPreferences();
   Future<ApiResponse<CariSoResponse?>> cariSo(int soId, String token) {
     return service.findSo(soId, token);
+  }
+
+  Future<ApiResponse<ListJobResponse?>> getJobById(int soId, String token) {
+    return service.getJobByUserId(soId, token);
   }
 
   void setSession(int timbangId) {

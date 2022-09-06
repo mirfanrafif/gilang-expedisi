@@ -28,7 +28,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
       appBar: AppBar(title: const Text("Daftar Timbang")),
       body: BlocBuilder<SoBloc, SoState>(
         builder: (context, timbang) {
-          if (timbang is SoLoaded) {
+          if (timbang is SoSelected) {
             return BlocConsumer<DetailTimbangBloc, DetailTimbangState>(
                 listener: (context, state) {
               if (state is UploadBuktiErrorState) {

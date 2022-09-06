@@ -1,3 +1,4 @@
+import 'package:aplikasi_timbang/bloc/bloc/list_so_bloc.dart';
 import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/bloc/timbang/timbang_bloc.dart';
@@ -30,8 +31,11 @@ class MyApp extends StatelessWidget {
         BlocProvider<TimbangBloc>(
           create: (context) => TimbangBloc(),
         ),
+        BlocProvider(create: (context) => SoBloc()
+            // ..add(GetSessionEvent()),
+            ),
         BlocProvider(
-          create: (context) => SoBloc()..add(GetSessionEvent()),
+          create: (context) => ListSoBloc()..add(GetSoByUserIdEvent()),
         ),
         BlocProvider(
           create: (context) => UserBloc()..add(CheckSessionEvent()),

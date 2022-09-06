@@ -18,7 +18,7 @@ class HasilTimbang extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SoBloc, SoState>(
       builder: (context, timbang) {
-        if (timbang is SoLoaded) {
+        if (timbang is SoSelected) {
           return BlocBuilder<DetailTimbangBloc, DetailTimbangState>(
             builder: (context, state) {
               return Card(

@@ -18,10 +18,11 @@ class SoBloc extends Bloc<SoEvent, SoState> {
 
   SoBloc() : super(const SoInitial()) {
     on<GetSessionEvent>(onGetSession);
-    on<CariSoEvent>(onCariSo);
+
     on<CompleteJobEvent>(onCompleteJob);
     on<ResetSoEvent>(onReset);
     on<UpdateTimbangEvent>(onUpdateTimbang);
+    on<SelectSOEvent>(onSelectSo);
   }
 
   Future<void> onGetSession(
@@ -39,84 +40,13 @@ class SoBloc extends Bloc<SoEvent, SoState> {
 
       newTimbang.listProduk = listProduk;
 
-      emit(SoLoaded(newTimbang));
+      emit(SoSelected(timbang: newTimbang));
     }
   }
 
-  void onCariSo(CariSoEvent event, Emitter<SoState> emit) async {
-    emit(const SoLoading());
-    var token = userRepository.getToken();
-    var user = userRepository.getUser();
-    var response = await soRepository.cariSo(event.id, token ?? '');
-
-    if (!response.success && response.responseCode == 401) {
-      var currentUser = userRepository.getUser();
-      var newToken =
-          await userRepository.login(currentUser.email, currentUser.password);
-
-      userRepository.saveToken(newToken.data?.accessToken ?? '');
-
-      token = userRepository.getToken();
-      response = await soRepository.cariSo(event.id, token ?? '');
-    }
-
-    if (!response.success) {
-      emit(SoNotFound(
-        id: event.id,
-        message: response.message,
-      ));
-      return;
-    }
-    var data = response.data!.data;
-
-    if (data.isEmpty) {
-      emit(SoNotFound(
-        id: event.id,
-        message: 'Tidak ada PO dengan nomor ' + event.id.toString(),
-      ));
-      return;
-    }
-
-    var firstSoResult = data.first;
-
-    //hasil dari cari PO
-    var newTimbang = await Timbang.findById(firstSoResult.id ?? 0);
-
-    //mencari data di sqlite, jika sudah ada ambil disana aja
-    if (newTimbang == null) {
-      newTimbang = Timbang(
-        firstSoResult.id ?? 0,
-        firstSoResult.number ?? 0,
-        user.id,
-        firstSoResult.customer?.fullName ?? '',
-        firstSoResult.shippingAddress ?? '',
-        firstSoResult.transactionDate ?? DateTime.now(),
-      );
-      await newTimbang.save();
-    }
-
-    //karena di setiap PO ada produk yang ditimbang, contoh ayam hidup, maka buatkan classnya juga
-    for (var produk in firstSoResult.products) {
-      var newProduk = await TimbangProduk.findById(produk.id ?? 0);
-      if (newProduk == null) {
-        newProduk = TimbangProduk(
-            produk.id ?? 0,
-            produk.product?.name ?? '',
-            produk.amount?.toInt() ?? 0,
-            produk.amount?.toInt() ?? 0,
-            produk.description,
-            newTimbang.id);
-        await newProduk.save();
-      }
-      var timbangDetail = await TimbangDetail.getByProdukId(newProduk.id);
-      newProduk.listTimbangDetail = timbangDetail;
-      newTimbang.tambahProduk(newProduk);
-    }
-
-    //atur sesi timbang
-    soRepository.setSession(newTimbang.id);
-
-    emit(SoLoaded(newTimbang));
+  Future<void> onSelectSo(SelectSOEvent event, Emitter<SoState> emit) async {
+    soRepository.setSession(event.timbang.id);
+    emit(SoSelected(timbang: event.timbang));
   }
 
   Future<void> onCompleteJob(
@@ -149,6 +79,6 @@ class SoBloc extends Bloc<SoEvent, SoState> {
 
   Future<void> onUpdateTimbang(
       UpdateTimbangEvent event, Emitter<SoState> emit) async {
-    emit(SoLoaded(event.newTimbang));
+    emit(SoSelected(timbang: event.newTimbang));
   }
 }

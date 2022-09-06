@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -20,6 +21,7 @@ class DbHelper {
         await openDatabase(path, version: 2, onCreate: _createDb,
             onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (newVersion > oldVersion) {
+        log(newVersion.toString() + " " + oldVersion.toString());
         for (var i = oldVersion - 1; i < migrations.length; i++) {
           await db.execute(migrations[i]);
         }
@@ -68,14 +70,19 @@ class DbHelper {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     ''');
+
+    for (var item in migrations) {
+      await db.execute(item);
+    }
   }
 
   List<String> migrations = [
-    'ALTER TABLE job ADD COLUMN tanggal_pemesanan DATETIME NOT NULL'
+    'ALTER TABLE job ADD COLUMN tanggal_pemesanan DATETIME'
   ];
 
   Future<int> insert(String table, Map<String, dynamic> object) async {
     var db = await init();
+    log((await db.getVersion()).toString());
     int result = await db.insert(table, object);
     return result;
   }
