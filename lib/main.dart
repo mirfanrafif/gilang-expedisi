@@ -1,14 +1,14 @@
-import 'package:aplikasi_timbang/bloc/bloc/list_so_bloc.dart';
 import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
 import 'package:aplikasi_timbang/bloc/timbang/timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/user/user_bloc.dart';
-import 'package:aplikasi_timbang/components/pages/assigned_job_list_page.dart';
-import 'package:aplikasi_timbang/components/pages/login_page.dart';
+import 'package:aplikasi_timbang/pages/assigned_job_list_page.dart';
+import 'package:aplikasi_timbang/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'bloc/list_so/list_so_bloc.dart';
 import 'data/preferences/base_preferences.dart';
 
 void main() async {

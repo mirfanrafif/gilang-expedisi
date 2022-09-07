@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:aplikasi_timbang/data/database/migration_item.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -17,21 +18,34 @@ class DbHelper {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'timbang.db';
 
-    return _database ??=
-        await openDatabase(path, version: 2, onCreate: _createDb,
-            onUpgrade: (Database db, int oldVersion, int newVersion) async {
-      if (newVersion > oldVersion) {
-        log(newVersion.toString() + " " + oldVersion.toString());
-        for (var i = oldVersion - 1; i < migrations.length; i++) {
-          await db.execute(migrations[i]);
-        }
-      }
-    });
+    return _database ??= await openDatabase(
+      path,
+      version: 3,
+      onCreate: _createDb,
+      onUpgrade: _upgradeDb,
+    );
   }
 
   void _createDb(Database db, int version) async {
-    //buat tabel timbang
-    await db.execute('''
+    var migrationsToRun = [...migrations]
+      ..removeWhere((element) => element.to > version);
+    for (var item in migrationsToRun) {
+      await item.run(db);
+    }
+  }
+
+  void _upgradeDb(Database db, int oldVersion, int newVersion) async {
+    var migrationsToRun = [...migrations]..removeWhere(
+        (element) => element.from < oldVersion && element.to > newVersion);
+    for (var migration in migrationsToRun) {
+      await migration.run(db);
+    }
+  }
+
+  List<MigrationItem> migrations = [
+    const MigrationItem(migrationQueryList: [
+      //buat tabel timbang
+      '''
       CREATE TABLE job(
         id INTEGER PRIMARY KEY NOT NULL,
         nomor_so INTEGER NOT NULL,
@@ -40,9 +54,9 @@ class DbHelper {
         supir_id INTEGER NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    ''');
-
-    await db.execute('''
+    ''',
+      //menyimpan produk yang akan ditimbang
+      '''
       CREATE TABLE so_product(
         id INTEGER PRIMARY KEY NOT NULL,
         nama_produk INTEGER NOT NULL,
@@ -56,10 +70,9 @@ class DbHelper {
         bukti_verifikasi_url VARCHAR(255) DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    ''');
-
-    //buat tabel timbang detail untuk menambah detail timbang
-    await db.execute('''
+    ''',
+      //buat tabel timbang detail untuk menambah detail timbang
+      '''
       CREATE TABLE product_detail(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         berat INTEGER NOT NULL,
@@ -69,20 +82,21 @@ class DbHelper {
         produk_id INTEGER NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    ''');
-
-    for (var item in migrations) {
-      await db.execute(item);
-    }
-  }
-
-  List<String> migrations = [
-    'ALTER TABLE job ADD COLUMN tanggal_pemesanan DATETIME'
+    '''
+    ], from: 0, to: 1),
+    //migration from v1 to v2
+    const MigrationItem(migrationQueryList: [
+      'ALTER TABLE job ADD COLUMN tanggal_pemesanan DATETIME'
+    ], from: 1, to: 2),
+    const MigrationItem(migrationQueryList: [
+      '''
+        ALTER TABLE job ADD COLUMN status VARCHAR(255) DEFAULT ''
+      '''
+    ], from: 2, to: 3),
   ];
 
   Future<int> insert(String table, Map<String, dynamic> object) async {
     var db = await init();
-    log((await db.getVersion()).toString());
     int result = await db.insert(table, object);
     return result;
   }

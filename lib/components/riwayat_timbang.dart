@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/models/timbang.dart';
+import '../data/models/timbang.dart';
 
 class RiwayatTimbangItem extends StatelessWidget {
   final Timbang timbang;

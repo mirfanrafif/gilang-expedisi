@@ -63,6 +63,7 @@ class SoRepository {
             '',
             '',
             DateTime.now(),
+            '',
           );
           await existing.save();
         }

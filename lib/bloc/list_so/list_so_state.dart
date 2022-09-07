@@ -23,9 +23,10 @@ class ListSoError extends ListSoState {
 
 class ListSoLoaded extends ListSoState {
   final List<Timbang> timbang;
+  final List<Timbang> completedTimbang;
 
-  const ListSoLoaded(this.timbang) : super();
+  const ListSoLoaded(this.timbang, this.completedTimbang) : super();
 
   @override
-  List<Object> get props => [timbang];
+  List<Object> get props => [timbang, completedTimbang];
 }

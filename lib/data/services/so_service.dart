@@ -63,7 +63,7 @@ class SoService {
         baseUrl + '/job',
         queryParameters: {
           'filter.user.id': '\$eq:' + userId.toString(),
-          'filter.status': '\$eq:' + userId.toString(),
+          // 'filter.status': '\$eq:' + userId.toString(),
         },
         options: Options(
           headers: {

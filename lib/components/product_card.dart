@@ -1,10 +1,10 @@
 import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
-import 'package:aplikasi_timbang/components/pages/tambah_timbang_page.dart';
 import 'package:aplikasi_timbang/data/models/produk.dart';
+import 'package:aplikasi_timbang/pages/tambah_timbang_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/models/timbang.dart';
+import '../data/models/timbang.dart';
 
 class ProductCard extends StatelessWidget {
   final TimbangProduk produk;

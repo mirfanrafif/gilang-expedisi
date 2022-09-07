@@ -36,7 +36,6 @@ class ListSoBloc extends Bloc<ListSoEvent, ListSoState> {
     }
 
     if (!response.success) {
-      //TODO: Benerin konversi response
       emit(ListSoError(
         message: response.message,
       ));
@@ -59,6 +58,7 @@ class ListSoBloc extends Bloc<ListSoEvent, ListSoState> {
           job.so?.customer?.fullName ?? '',
           job.so?.shippingAddress ?? '',
           job.so?.transactionDate ?? DateTime.now(),
+          job.status ?? 'process',
         );
         await newTimbang.save();
       }
@@ -83,8 +83,11 @@ class ListSoBloc extends Bloc<ListSoEvent, ListSoState> {
 
       listTimbang.add(newTimbang);
     }
+    
+    var needToProcessTimbang = [...listTimbang]..removeWhere((element) => element.status == 'complete');
+    var completedTimbang = [...listTimbang]..removeWhere((element) => element.status != 'complete');
 
     //atur sesi timbang
-    emit(ListSoLoaded(listTimbang));
+    emit(ListSoLoaded(needToProcessTimbang, completedTimbang));
   }
 }

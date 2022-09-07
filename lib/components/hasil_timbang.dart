@@ -3,7 +3,7 @@ import 'package:aplikasi_timbang/data/models/timbang_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/so/so_bloc.dart';
+import '../bloc/so/so_bloc.dart';
 
 class HasilTimbang extends StatelessWidget {
   final TimbangDetail detail;
