@@ -1,4 +1,5 @@
 import 'package:aplikasi_timbang/components/timbang_card.dart';
+import 'package:aplikasi_timbang/pages/OrderTypeDropdown.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,24 +26,32 @@ class _SoListState extends State<SoList> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CariSOPage(),
+              builder: (context) => const CariSOPage(),
             ),
           );
         }
       },
       child: BlocConsumer<ListSoBloc, ListSoState>(
         listener: (context, state) {
-          //TODO: Listen ketika gagal ambil SO
           if (state is ListSoError) {
             showErrorSnackbar(context, state.message);
           }
         },
         builder: (context, state) {
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                OrderTypeDropdown(
+                  onChange: (int? newValue) {
+                    setState(() {
+                      if (newValue != null) {
+                        selectedJobType = newValue;
+                      }
+                    });
+                  },
+                  selectedJobType: selectedJobType,
+                ),
                 const SizedBox(
                   height: 16,
                 ),
@@ -52,8 +61,11 @@ class _SoListState extends State<SoList> {
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
-                                context.read<SoBloc>().add(SelectSOEvent(
-                                    timbang: state.timbang[index]));
+                                context.read<SoBloc>().add(
+                                      SelectSOEvent(
+                                        timbang: state.timbang[index],
+                                      ),
+                                    );
                               },
                               child: TimbangCard(
                                 timbang: state.timbang[index],
@@ -76,7 +88,7 @@ class _SoListState extends State<SoList> {
 
   final _cariSoController = TextEditingController();
 
-  Widget getSearchSo() {
+  Widget _getSearchSo() {
     return Row(
       children: [
         Expanded(

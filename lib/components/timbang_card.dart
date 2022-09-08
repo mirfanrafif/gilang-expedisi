@@ -11,8 +11,9 @@ class TimbangCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Card(
+        margin: EdgeInsets.zero,
         child: Container(
           padding: const EdgeInsets.all(16),
           width: double.infinity,
@@ -22,7 +23,8 @@ class TimbangCard extends StatelessWidget {
             children: [
               Text(
                 "SO No. ${timbang.soId}",
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
               Text("Nama Kandang: " + timbang.namaKandang),
               Text(
@@ -32,10 +34,12 @@ class TimbangCard extends StatelessWidget {
                       context,
                     ),
               ),
-              ...(timbang.alamatKandang.isNotEmpty ? [
-                const Text("Alamat Kandang: "),
-                Text(timbang.alamatKandang),
-              ] : <Widget>[])
+              ...(timbang.alamatKandang.isNotEmpty
+                  ? [
+                      Text("Alamat Kandang: "),
+                      Text(timbang.alamatKandang),
+                    ]
+                  : []),
             ],
           ),
         ),
