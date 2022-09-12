@@ -9,14 +9,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'assigned_job_list_page.dart';
 
-class CariSOPage extends StatefulWidget {
-  const CariSOPage({Key? key}) : super(key: key);
+class ProductListToCountPage extends StatefulWidget {
+  const ProductListToCountPage({Key? key}) : super(key: key);
 
   @override
-  State<CariSOPage> createState() => _CariSOPageState();
+  State<ProductListToCountPage> createState() => _ProductListToCountPageState();
 }
 
-class _CariSOPageState extends State<CariSOPage> {
+class _ProductListToCountPageState extends State<ProductListToCountPage> {
   final _cariSoController = TextEditingController();
 
   @override
@@ -89,10 +89,6 @@ class _CariSOPageState extends State<CariSOPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // getSearchSo(), //Text Field untuk cari SO
-                  const SizedBox(
-                    height: 16,
-                  ),
                   ...getSoDetail(state),
                 ],
               ),
@@ -102,48 +98,6 @@ class _CariSOPageState extends State<CariSOPage> {
       },
     );
   }
-
-  // Widget getSearchSo() {
-  //   return Row(
-  //     children: [
-  //       Expanded(
-  //         child: TextField(
-  //           decoration: const InputDecoration(
-  //             border: OutlineInputBorder(
-  //               borderSide: BorderSide.none,
-  //             ),
-  //             hintText: "No. PO",
-  //             filled: true,
-  //             fillColor: Colors.black12,
-  //           ),
-  //           keyboardType: TextInputType.number,
-  //           controller: _cariSoController,
-  //         ),
-  //       ),
-  //       const SizedBox(
-  //         width: 16,
-  //       ),
-  //       ClipOval(
-  //         child: Container(
-  //           padding: const EdgeInsets.all(8),
-  //           color: Theme.of(context).primaryColor,
-  //           child: IconButton(
-  //             color: Colors.white,
-  //             icon: const Icon(Icons.search),
-  //             onPressed: () {
-  //               if (_cariSoController.text.isNotEmpty) {
-  //                 int id = int.parse(_cariSoController.text);
-  //                 context.read<SoBloc>().add(GetSoByUserIdEvent(id: id));
-  //               }
-  //             },
-  //             splashColor: Colors.white,
-  //             highlightColor: Colors.white,
-  //           ),
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
 
   List<Widget> getSoDetail(SoState state) {
     if (state is SoSelected) {
@@ -184,15 +138,8 @@ class _CariSOPageState extends State<CariSOPage> {
         const SizedBox(
           height: 16,
         ),
-        ...state.timbang.listProduk
-            .map((e) => ProductCard(
-                  timbang: state.timbang,
-                  produk: e,
-                ))
-            .toList(),
-        const SizedBox(
-          height: 16,
-        ),
+        //List produk
+        getProductListCard(state),
         getSelesaiTimbangBtn(state)
       ];
     } else if (state is SoLoading) {
@@ -204,6 +151,21 @@ class _CariSOPageState extends State<CariSOPage> {
     } else {
       return [];
     }
+  }
+
+  Widget getProductListCard(SoSelected state) {
+    return Expanded(
+        child: GridView.count(
+      crossAxisCount: 2,
+      crossAxisSpacing: 16,
+      mainAxisSpacing: 16,
+      children: state.timbang.listProduk
+          .map((e) => ProductToCountCard(
+                timbang: state.timbang,
+                produk: e,
+              ))
+          .toList(),
+    ));
   }
 
   Widget getAlamatKandangText(SoSelected state) {

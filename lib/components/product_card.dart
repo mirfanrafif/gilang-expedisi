@@ -6,16 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../data/models/timbang.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductToCountCard extends StatelessWidget {
   final TimbangProduk produk;
   final Timbang timbang;
 
-  const ProductCard({Key? key, required this.timbang, required this.produk})
+  const ProductToCountCard(
+      {Key? key, required this.timbang, required this.produk})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

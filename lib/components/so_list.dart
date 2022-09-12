@@ -26,7 +26,7 @@ class _SoListState extends State<SoList> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CariSOPage(),
+              builder: (context) => const ProductListToCountPage(),
             ),
           );
         }

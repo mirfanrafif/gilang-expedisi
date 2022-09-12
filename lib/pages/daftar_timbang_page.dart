@@ -106,7 +106,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CariSOPage(),
+                      builder: (context) => const ProductListToCountPage(),
                     ),
                     (route) => false);
               }
@@ -144,14 +144,14 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                                   Text(
                                     getTotalTimbang(state) + " Kg",
                                     style: const TextStyle(
-                                      fontSize: 40,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                   Text(
                                     getTotalJumlah(state) + " Ekor",
                                     style: const TextStyle(
-                                      fontSize: 32,
+                                      fontSize: 24,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -166,7 +166,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                                   Text(
                                     state.produk.targetBerat.toString() + " Kg",
                                     style: const TextStyle(
-                                      fontSize: 40,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -174,7 +174,7 @@ class _DaftarTimbangPageState extends State<DaftarTimbangPage> {
                                     state.produk.targetJumlah.toString() +
                                         " Ekor",
                                     style: const TextStyle(
-                                      fontSize: 32,
+                                      fontSize: 24,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

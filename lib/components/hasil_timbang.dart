@@ -22,21 +22,23 @@ class HasilTimbang extends StatelessWidget {
           return BlocBuilder<DetailTimbangBloc, DetailTimbangState>(
             builder: (context, state) {
               return Card(
+                margin: const EdgeInsets.only(bottom: 16),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Row(
-                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
-                          "Timbang " + (index + 1).toString(),
+                          "Timbang #" + (index + 1).toString(),
                           style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
                       ),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Row(
                             children: [
