@@ -1,5 +1,4 @@
 import 'package:aplikasi_timbang/components/timbang_card.dart';
-import 'package:aplikasi_timbang/pages/OrderTypeDropdown.dart';
 import 'package:aplikasi_timbang/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,90 +37,39 @@ class _SoListState extends State<SoList> {
           }
         },
         builder: (context, state) {
-          return Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                OrderTypeDropdown(
-                  onChange: (int? newValue) {
-                    setState(() {
-                      if (newValue != null) {
-                        selectedJobType = newValue;
-                      }
-                    });
-                  },
-                  selectedJobType: selectedJobType,
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Expanded(
-                  child: state is ListSoLoaded
-                      ? ListView.builder(
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                context.read<SoBloc>().add(
-                                      SelectSOEvent(
-                                        timbang: state.timbang[index],
-                                      ),
-                                    );
-                              },
-                              child: TimbangCard(
-                                timbang: state.timbang[index],
-                              ),
-                            );
-                          },
-                          itemCount: state.timbang.length,
-                        )
-                      : const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                ),
-              ],
-            ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 16,
+              ),
+              Expanded(
+                child: state is ListSoLoaded
+                    ? ListView.builder(
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              context.read<SoBloc>().add(
+                                    SelectSOEvent(
+                                      timbang: state.timbang[index],
+                                    ),
+                                  );
+                            },
+                            child: TimbangCard(
+                              timbang: state.timbang[index],
+                            ),
+                          );
+                        },
+                        itemCount: state.timbang.length,
+                      )
+                    : const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+              ),
+            ],
           );
         },
       ),
-    );
-  }
-
-  final _cariSoController = TextEditingController();
-
-  Widget _getSearchSo() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
-              hintText: "No. PO",
-              filled: true,
-              fillColor: Colors.black12,
-            ),
-            keyboardType: TextInputType.number,
-            controller: _cariSoController,
-          ),
-        ),
-        const SizedBox(
-          width: 16,
-        ),
-        ClipOval(
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            color: Theme.of(context).primaryColor,
-            child: IconButton(
-              color: Colors.white,
-              icon: const Icon(Icons.search),
-              onPressed: () {},
-              splashColor: Colors.white,
-              highlightColor: Colors.white,
-            ),
-          ),
-        )
-      ],
     );
   }
 }

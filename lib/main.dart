@@ -1,5 +1,6 @@
 import 'package:aplikasi_timbang/bloc/detail_timbang/detail_timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/so/so_bloc.dart';
+import 'package:aplikasi_timbang/bloc/socketbloc/socketbloc_bloc.dart';
 import 'package:aplikasi_timbang/bloc/timbang/timbang_bloc.dart';
 import 'package:aplikasi_timbang/bloc/user/user_bloc.dart';
 import 'package:aplikasi_timbang/pages/assigned_job_list_page.dart';
@@ -35,10 +36,13 @@ class MyApp extends StatelessWidget {
             // ..add(GetSessionEvent()),
             ),
         BlocProvider(
-          create: (context) => ListSoBloc()..add(GetSoByUserIdEvent()),
+          create: (context) => ListSoBloc()..add(const GetSoByUserIdEvent()),
         ),
         BlocProvider(
           create: (context) => UserBloc()..add(CheckSessionEvent()),
+        ),
+        BlocProvider(
+          create: (context) => SocketblocBloc()..add(InitSocketEvent()),
         )
       ],
       child: MaterialApp(

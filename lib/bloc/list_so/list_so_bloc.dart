@@ -1,5 +1,9 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 import '../../data/models/produk.dart';
 import '../../data/models/timbang.dart';
@@ -83,9 +87,11 @@ class ListSoBloc extends Bloc<ListSoEvent, ListSoState> {
 
       listTimbang.add(newTimbang);
     }
-    
-    var needToProcessTimbang = [...listTimbang]..removeWhere((element) => element.status == 'complete');
-    var completedTimbang = [...listTimbang]..removeWhere((element) => element.status != 'complete');
+
+    var needToProcessTimbang = [...listTimbang]
+      ..removeWhere((element) => element.status == 'complete');
+    var completedTimbang = [...listTimbang]
+      ..removeWhere((element) => element.status != 'complete');
 
     //atur sesi timbang
     emit(ListSoLoaded(needToProcessTimbang, completedTimbang));

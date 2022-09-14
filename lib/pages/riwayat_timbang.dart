@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/list_so/list_so_bloc.dart';
 import '../../utils/constants.dart';
 import '../components/timbang_card.dart';
-import 'OrderTypeDropdown.dart';
 
 class RiwayatSO extends StatefulWidget {
   const RiwayatSO({Key? key}) : super(key: key);
@@ -24,38 +23,26 @@ class _RiwayatSOState extends State<RiwayatSO> {
         }
       },
       builder: (context, state) {
-        return Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              OrderTypeDropdown(
-                onChange: (int? newValue) {
-                  setState(() {
-                    if (newValue != null) {
-                      selectedJobType = newValue;
-                    }
-                  });
-                },
-                selectedJobType: selectedJobType,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Expanded(
-                child: state is ListSoLoaded
-                    ? ListView.builder(
-                        itemBuilder: (context, index) {
-                          return TimbangCard(
-                              timbang: state.completedTimbang[index]);
-                        },
-                        itemCount: state.completedTimbang.length,
-                      )
-                    : const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-              ),
-            ],
-          ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 16,
+            ),
+            Expanded(
+              child: state is ListSoLoaded
+                  ? ListView.builder(
+                      itemBuilder: (context, index) {
+                        return TimbangCard(
+                            timbang: state.completedTimbang[index]);
+                      },
+                      itemCount: state.completedTimbang.length,
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+            ),
+          ],
         );
       },
     );
