@@ -36,8 +36,8 @@ jobs:
           flutter-version: '2.10.5'
           channel: 'stable'
       
-      - name: Checking doctor
-        run: flutter -v
+      - name: Checking flutter
+        run: flutter --version
         
       - name: Decoding jks
         run: |
