@@ -41,7 +41,7 @@ jobs:
         
       - name: Decoding jks
         run: |
-          base64 --decode $UPLOAD_KEY > app/upload-keystore.jks
+          echo "$UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
           echo "storeFile=upload-keystore.jks" >> key.properties
           echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> key.properties
           echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
